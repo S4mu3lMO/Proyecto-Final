@@ -1,6 +1,6 @@
 package co.edu.uniquindio.finalproyect.model;
 
-public class Paciente extends Usuario {
+public class Paciente extends Usuario implements iNotificacionCita{
     private String numeroSeguroSocial;
     private HistorialMedico historialMedico;
 
@@ -24,6 +24,18 @@ public class Paciente extends Usuario {
 
     public void setHistorialMedico(HistorialMedico historialMedico) {
         this.historialMedico = historialMedico;
+    }
+
+
+    @Override
+    public void notificarCambioCita(CitaMedica cita, String mensaje) {
+        if (cita != null && this.equals(cita.getPaciente())) {
+            System.out.println("--- NOTIFICACIÓN para Paciente " + this.getNombre() + " ---");
+            System.out.println("Su cita con Dr(a). " + cita.getMedico().getNombre() +
+                    " (" + cita.getFecha() + " " + cita.getHora() + ") ha sido " + mensaje + ".");
+            System.out.println("Estado actual: " + cita.getEstadoCita());
+            System.out.println("----------------------------------------");
+        }
     }
 }
 

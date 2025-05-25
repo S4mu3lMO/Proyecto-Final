@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 
-public class Medico extends Usuario implements iGestionHorarios{
+public class Medico extends Usuario implements iGestionHorarios, iNotificacionCita{
     private String especialidad;
     private String numeroLicenciaMedica;
     private LinkedList<CitaMedica> listCitasMedicas;
@@ -115,7 +115,7 @@ public class Medico extends Usuario implements iGestionHorarios{
     }
 
 
-
+    @Override
     public void notificarCambioCita(CitaMedica cita, String mensaje) {
         if (cita != null) {
             System.out.println("--- NOTIFICACIÓN para Dr(a). " + this.getNombre() + " ---");

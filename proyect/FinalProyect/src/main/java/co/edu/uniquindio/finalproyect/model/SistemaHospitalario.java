@@ -29,6 +29,7 @@ public class SistemaHospitalario {
         this.listMedicamentos = new LinkedList<>();
     }
 
+
     public LinkedList<Medicamento> getListMedicamentos() {
         return listMedicamentos;
     }
@@ -101,41 +102,43 @@ public class SistemaHospitalario {
         this.listMedicos = listMedicos;
     }
 
+    // Métodos de Gestión de Usuarios
 
     public boolean registrarPaciente(Paciente paciente){
-        for(Paciente p : listPacientes){
-            if(p.getCedula().equals(paciente.getCedula())){
-                System.out.println("Error: Paciente con cédula " + paciente.getCedula() + " ya existe.");
-                return false;
-            }
+        // Verificar si la cédula ya existe en la lista general de usuarios (más robusto)
+        if(buscarUsuarioPorCedula(paciente.getCedula()) != null){
+            System.out.println("Error: Usuario (Paciente) con cédula " + paciente.getCedula() + " ya existe.");
+            return false;
         }
         paciente.setTipoUsuario(TipoUsuario.PACIENTE);
-        String idHistorial = UUID.randomUUID().toString();
-        HistorialMedico nuevoHistorial = new HistorialMedico(idHistorial, paciente, new LinkedList<>(), new LinkedList<>());
-        paciente.setHistorialMedico(nuevoHistorial);
+        // Asegurarse de que el historial médico se cree si no viene en el objeto Paciente
+        if (paciente.getHistorialMedico() == null) {
+            String idHistorial = UUID.randomUUID().toString();
+            HistorialMedico nuevoHistorial = new HistorialMedico(idHistorial, paciente, new LinkedList<>(), new LinkedList<>());
+            paciente.setHistorialMedico(nuevoHistorial);
+        }
         listPacientes.add(paciente);
-        listUsuarios.add(paciente);
+        listUsuarios.add(paciente); // Añadir también a la lista general de usuarios
         System.out.println("Paciente " + paciente.getNombre() + " registrado exitosamente.");
         return true;
     }
 
-
     public boolean actualizarPaciente(Paciente paciente){
-        for(Paciente p : listPacientes){
-            if(p.getCedula().equals(paciente.getCedula())){
-                p.setNombre(paciente.getNombre());
-                p.setSexo(paciente.getSexo());
-                p.setEdad(paciente.getEdad());
-                p.setNombreUsuario(paciente.getNombreUsuario());
-                p.setContrasena(paciente.getContrasena());
-                p.setNumeroSeguroSocial(paciente.getNumeroSeguroSocial());
-                System.out.println("Datos del paciente " + paciente.getNombre() + " actualizados exitosamente.");
-                return true;
-            }
+        Paciente pacienteExistente = buscarPacientePorCedula(paciente.getCedula());
+        if(pacienteExistente == null){
+            System.out.println("Error: Paciente con cédula " + paciente.getCedula() + " no encontrado para actualizar.");
+            return false;
         }
-        System.out.println("Error: Paciente con cédula " + paciente.getCedula() + " no encontrado para actualizar.");
-        return false;
+        pacienteExistente.setNombre(paciente.getNombre());
+        pacienteExistente.setSexo(paciente.getSexo());
+        pacienteExistente.setEdad(paciente.getEdad());
+        pacienteExistente.setNombreUsuario(paciente.getNombreUsuario());
+        pacienteExistente.setContrasena(paciente.getContrasena());
+        pacienteExistente.setNumeroSeguroSocial(paciente.getNumeroSeguroSocial());
+        System.out.println("Datos del paciente " + paciente.getNombre() + " actualizados exitosamente.");
+        return true;
     }
+
     public Paciente buscarPacientePorCedula(String cedula) {
         for (Paciente p : listPacientes) {
             if (p.getCedula().equals(cedula)) {
@@ -145,6 +148,59 @@ public class SistemaHospitalario {
         return null;
     }
 
+    public boolean registrarMedico(Medico medico) {
+        if (medico == null || buscarMedicoPorCedula(medico.getCedula()) != null) {
+            System.out.println("Error al registrar médico: Cédula ya existe o médico es nulo.");
+            return false;
+        }
+        medico.setTipoUsuario(TipoUsuario.MEDICO);
+        this.listMedicos.add(medico);
+        this.listUsuarios.add(medico);
+        System.out.println("Médico " + medico.getNombre() + " registrado exitosamente.");
+        return true;
+    }
+
+    public Medico buscarMedicoPorCedula(String cedula) {
+        for (Medico m : listMedicos) {
+            if (m.getCedula().equals(cedula)) {
+                return m;
+            }
+        }
+        return null;
+    }
+
+    public boolean registrarAdministrativo(Administrativo admin) {
+        if (admin == null || buscarAdministrativoPorCedula(admin.getCedula()) != null) {
+            System.out.println("Error al registrar administrativo: Cédula ya existe o administrativo es nulo.");
+            return false;
+        }
+        admin.setTipoUsuario(TipoUsuario.ADMINISTRADOR);
+        this.listAdministrativos.add(admin);
+        this.listUsuarios.add(admin);
+        System.out.println("Administrativo " + admin.getNombre() + " registrado exitosamente.");
+        return true;
+    }
+
+    public Administrativo buscarAdministrativoPorCedula(String cedula) {
+        for (Administrativo a : listAdministrativos) {
+            if (a.getCedula().equals(cedula)) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    public Usuario buscarUsuarioPorCedula(String cedula) {
+        for (Usuario u : listUsuarios) {
+            if (u.getCedula().equals(cedula)) {
+                return u;
+            }
+        }
+        return null;
+    }
+
+
+    // --- Métodos de Citas Médicas ---
 
     public boolean solicitarCitaMedica(String cedulaPaciente, String cedulaMedico,
                                        LocalDate fechaCita, LocalTime horaCita, String motivoCita) {
@@ -192,74 +248,55 @@ public class SistemaHospitalario {
                 salaDisponible, motivoCita, EstadoCita.PENDIENTE);
 
         listCitasMedicas.add(nuevaCita);
-        medico.getListCitasMedicas().add(nuevaCita); //Añadir la cita al horario del médico
-
+        medico.agregarListCitasMedicas(nuevaCita);
         System.out.println("Cita médica solicitada exitosamente. ID de cita: " + idCita);
         return true;
     }
 
-    public Medico buscarMedicoPorCedula(String cedula) {
-        for (Medico m : listMedicos) {
-            if (m.getCedula().equals(cedula)) {
-                return m;
-            }
-        }
-        return null;
-    }
-
     private boolean medicoTieneCita(Medico medico, LocalDate fecha, LocalTime hora) {
         for (CitaMedica c : medico.getListCitasMedicas()) {
-            if (c.getFecha().equals(fecha) && c.getHora().equals(hora)) {
+            if (c.getFecha().equals(fecha) && c.getHora().equals(hora) &&
+                    (c.getEstadoCita() == EstadoCita.PENDIENTE || c.getEstadoCita() == EstadoCita.CONFIRMADA)) { // Usar getEstado()
                 return true;
             }
         }
         return false;
     }
 
-
-    public Sala buscarSalaDisponible(LocalDate fecha, LocalTime hora, TipoSala tipoSala) {
-        for (Sala s : listSalas) {
-            if (s.getTipoSala() == tipoSala && s.isEstaDisponible()) {
-                boolean salaOcupadaPorOtraCita = false;
-                for (CitaMedica citaExistente : listCitasMedicas) {
-                    if (citaExistente.getSala() != null &&
-                            citaExistente.getSala().equals(s) && //
-                            citaExistente.getFecha().equals(fecha) &&
-                            citaExistente.getHora().equals(hora) &&
-                            (citaExistente.getEstadoCita() == EstadoCita.PENDIENTE ||
-                                    citaExistente.getEstadoCita() == EstadoCita.CONFIRMADA)) {
-                        salaOcupadaPorOtraCita = true;
-                        break;
-                    }
-                }
-                if (!salaOcupadaPorOtraCita) {
-                    return s;
-                }
+    public CitaMedica buscarCitaMedicaPorId(String idCita) {
+        for (CitaMedica cita : listCitasMedicas) {
+            if (cita.getIdCita().equals(idCita)) {
+                return cita;
             }
         }
         return null;
     }
 
-
-    public HistorialMedico consultarHistorialMedico(String cedulaPaciente) {
-        Paciente paciente = buscarPacientePorCedula(cedulaPaciente);
-        if (paciente == null) {
-            System.out.println("Error: Paciente con cédula " + cedulaPaciente + " no encontrado. No se puede consultar el historial.");
-            return null;
+    public boolean actualizarEstadoCita(String idCita, EstadoCita nuevoEstado) {
+        CitaMedica cita = buscarCitaMedicaPorId(idCita);
+        if (cita == null) {
+            System.out.println("Error: Cita con ID " + idCita + " no encontrada.");
+            return false;
         }
-        System.out.println("Historial médico del paciente " + paciente.getNombre() + " consultado exitosamente.");
-        return paciente.getHistorialMedico();
+
+        cita.setEstadoCita(nuevoEstado);
+
+        Medico medicoAsociado = cita.getMedico();
+        if (medicoAsociado != null) {
+            medicoAsociado.actualizarCitaEnLista(cita);
+            medicoAsociado.notificarCambioCita(cita, "actualizada a " + nuevoEstado.name());
+        }
+
+        Paciente pacienteAsociado = cita.getPaciente();
+        if (pacienteAsociado != null) {
+            System.out.println("Notificando al paciente " + pacienteAsociado.getNombre() + " sobre el cambio de estado de su cita.");
+        }
+        System.out.println("Estado de la cita " + idCita + " actualizado a " + nuevoEstado + ".");
+        return true;
     }
 
-
     public String notificarCitaMedica(String idCita) {
-        CitaMedica cita = null;
-        for (CitaMedica c : listCitasMedicas) {
-            if (c.getIdCita().equals(idCita)) {
-                cita = c;
-                break;
-            }
-        }
+        CitaMedica cita = buscarCitaMedicaPorId(idCita);
 
         if (cita == null) {
             return "Error: Cita con ID " + idCita + " no encontrada. No se puede generar la notificación.";
@@ -280,6 +317,55 @@ public class SistemaHospitalario {
         return notificacion.toString();
     }
 
+
+    public boolean cancelarCitaMedica(String idCita) {
+        CitaMedica cita = buscarCitaMedicaPorId(idCita);
+
+        if (cita == null) {
+            System.out.println("Error al cancelar cita: Cita con ID " + idCita + " no encontrada.");
+            return false;
+        }
+
+        if (cita.getEstadoCita() == EstadoCita.CANCELADA) {
+            System.out.println("La cita con ID " + idCita + " ya está cancelada.");
+            return false;
+        }
+
+        if (cita.getEstadoCita() == EstadoCita.FINALIZADA) {
+            System.out.println("La cita con ID " + idCita + " ya ha finalizado y no puede ser cancelada.");
+            return false;
+        }
+
+        cita.setEstadoCita(EstadoCita.CANCELADA);
+
+
+        Medico medicoAsociado = cita.getMedico();
+        if (medicoAsociado != null) {
+            medicoAsociado.actualizarCitaEnLista(cita);
+            medicoAsociado.notificarCambioCita(cita, "CANCELADA");
+        }
+
+        Paciente pacienteAsociado = cita.getPaciente();
+        if (pacienteAsociado != null) {
+            pacienteAsociado.notificarCambioCita(cita, "CANCELADA");
+        }
+
+        System.out.println("Cita con ID " + idCita + " ha sido cancelada exitosamente.");
+        return true;
+    }
+
+
+    //Métodos de Historial Médico y Diagnóstico/Tratamiento
+
+    public HistorialMedico consultarHistorialMedico(String cedulaPaciente) {
+        Paciente paciente = buscarPacientePorCedula(cedulaPaciente);
+        if (paciente == null) {
+            System.out.println("Error: Paciente con cédula " + cedulaPaciente + " no encontrado. No se puede consultar el historial.");
+            return null;
+        }
+        System.out.println("Historial médico del paciente " + paciente.getNombre() + " consultado exitosamente.");
+        return paciente.getHistorialMedico();
+    }
 
     public HistorialMedico obtenerHistorialPacienteParaMedico(String cedulaMedico, String cedulaPaciente) {
         Medico medico = buscarMedicoPorCedula(cedulaMedico);
@@ -311,7 +397,6 @@ public class SistemaHospitalario {
         return paciente.getHistorialMedico();
     }
 
-
     public boolean registrarDiagnostico(String cedulaMedico, String cedulaPaciente,
                                         String descripcionDiagnostico, LocalDate fechaDiagnostico) {
         Medico medicoResponsable = buscarMedicoPorCedula(cedulaMedico);
@@ -342,10 +427,9 @@ public class SistemaHospitalario {
         return true;
     }
 
-
     public boolean registrarTratamiento(String cedulaMedico, String cedulaPaciente,
                                         LocalDate fechaInicio, LocalDate fechaFin,
-                                        String descripcionTratamiento, LinkedList<Medicamento> listMedicamentos,
+                                        String descripcionTratamiento, LinkedList<Medicamento> listMedicamentosTratamiento, // Renombrado para claridad
                                         String dosisFrecuencia) {
 
         Medico medicoPrescriptor = buscarMedicoPorCedula(cedulaMedico);
@@ -367,9 +451,8 @@ public class SistemaHospitalario {
         }
 
         String idTratamiento = UUID.randomUUID().toString();
-        LinkedList<Medicamento> medicamentosDelTratamiento = new LinkedList<>();
         Tratamiento nuevoTratamiento = new Tratamiento(idTratamiento, fechaInicio, fechaFin,
-                descripcionTratamiento, medicamentosDelTratamiento, dosisFrecuencia, medicoPrescriptor);
+                descripcionTratamiento, listMedicamentosTratamiento, dosisFrecuencia, medicoPrescriptor);
         historial.agregarTratamiento(nuevoTratamiento);
 
         System.out.println("Tratamiento registrado exitosamente para el paciente " + paciente.getNombre() + " por el Dr(a). " + medicoPrescriptor.getNombre() + ". ID Tratamiento: " + idTratamiento);
@@ -377,83 +460,107 @@ public class SistemaHospitalario {
     }
 
 
-public LinkedList<HorarioDisponibilidad> consultarHorariosDisponibilidad(String cedulaMedico) {
-    Medico medico = buscarMedicoPorCedula(cedulaMedico);
-    if (medico == null) {
-        System.out.println("Error al consultar horarios: Médico con cédula " + cedulaMedico + " no encontrado.");
-        return null;
-    }
-    System.out.println("Horarios de disponibilidad del Dr(a). " + medico.getNombre() + " consultados.");
+    // Métodos de Administración de Horarios de Médicos
 
-    return medico.getListHorariosDisponibilidad();
-}
-
-
-public boolean actualizarHorarioDisponibilidad(String cedulaMedico, String idHorario, DayOfWeek nuevoDiaSemana, LocalTime nuevaHoraInicio, LocalTime nuevaHoraFin) {
-    Medico medico = buscarMedicoPorCedula(cedulaMedico);
-    if (medico == null) {
-        System.out.println("Error al actualizar horario: Médico con cédula " + cedulaMedico + " no encontrado.");
+    public boolean registrarHorarioDisponibilidad(String cedulaMedico, DayOfWeek diaSemana, LocalTime horaInicio, LocalTime horaFin) {
+        Medico medico = buscarMedicoPorCedula(cedulaMedico);
+        if (medico == null) {
+            System.out.println("Error al registrar horario: Médico con cédula " + cedulaMedico + " no encontrado.");
+            return false;
+        }
+        String idHorario = UUID.randomUUID().toString();
+        HorarioDisponibilidad nuevoHorario = new HorarioDisponibilidad(idHorario, diaSemana, horaInicio, horaFin);
+        if (medico.agregarHorarioDisponibilidad(nuevoHorario)) {
+            System.out.println("Horario de disponibilidad registrado exitosamente para el Dr(a). " + medico.getNombre() + ".");
+            return true;
+        }
+        System.out.println("Fallo al registrar el horario para el Dr(a). " + medico.getNombre() + ". (Posiblemente ya existe un horario con el mismo ID)");
         return false;
     }
 
-    HorarioDisponibilidad horarioActualizado = new HorarioDisponibilidad(idHorario, nuevoDiaSemana, nuevaHoraInicio, nuevaHoraFin);
-    if (medico.actualizarHorarioDisponibilidad(horarioActualizado)) {
-        System.out.println("Horario con ID " + idHorario + " del Dr(a). " + medico.getNombre() + " actualizado exitosamente.");
-        return true;
+    public LinkedList<HorarioDisponibilidad> consultarHorariosDisponibilidad(String cedulaMedico) {
+        Medico medico = buscarMedicoPorCedula(cedulaMedico);
+        if (medico == null) {
+            System.out.println("Error al consultar horarios: Médico con cédula " + cedulaMedico + " no encontrado.");
+            return null;
+        }
+        System.out.println("Horarios de disponibilidad del Dr(a). " + medico.getNombre() + " consultados.");
+
+        return medico.getListHorariosDisponibilidad();
     }
-    System.out.println("Fallo al actualizar el horario con ID " + idHorario + ". (Posiblemente no existe o datos inválidos)");
-    return false;
-}
 
+    public boolean actualizarHorarioDisponibilidad(String cedulaMedico, String idHorario, DayOfWeek nuevoDiaSemana, LocalTime nuevaHoraInicio, LocalTime nuevaHoraFin) {
+        Medico medico = buscarMedicoPorCedula(cedulaMedico);
+        if (medico == null) {
+            System.out.println("Error al actualizar horario: Médico con cédula " + cedulaMedico + " no encontrado.");
+            return false;
+        }
 
-public boolean eliminarHorarioDisponibilidad(String cedulaMedico, String idHorario) {
-    Medico medico = buscarMedicoPorCedula(cedulaMedico);
-    if (medico == null) {
-        System.out.println("Error al eliminar horario: Médico con cédula " + cedulaMedico + " no encontrado.");
+        HorarioDisponibilidad horarioActualizado = new HorarioDisponibilidad(idHorario, nuevoDiaSemana, nuevaHoraInicio, nuevaHoraFin);
+        if (medico.actualizarHorarioDisponibilidad(horarioActualizado)) {
+            System.out.println("Horario con ID " + idHorario + " del Dr(a). " + medico.getNombre() + " actualizado exitosamente.");
+            return true;
+        }
+        System.out.println("Fallo al actualizar el horario con ID " + idHorario + ". (Posiblemente no existe o datos inválidos)");
         return false;
     }
-    if (medico.eliminarHorarioDisponibilidad(idHorario)) {
-        System.out.println("Horario con ID " + idHorario + " del Dr(a). " + medico.getNombre() + " eliminado exitosamente.");
+
+    public boolean eliminarHorarioDisponibilidad(String cedulaMedico, String idHorario) {
+        Medico medico = buscarMedicoPorCedula(cedulaMedico);
+        if (medico == null) {
+            System.out.println("Error al eliminar horario: Médico con cédula " + cedulaMedico + " no encontrado.");
+            return false;
+        }
+        if (medico.eliminarHorarioDisponibilidad(idHorario)) {
+            System.out.println("Horario con ID " + idHorario + " del Dr(a). " + medico.getNombre() + " eliminado exitosamente.");
+            return true;
+        }
+        System.out.println("Fallo al eliminar el horario con ID " + idHorario + ". (Posiblemente no existe)");
+        return false;
+    }
+
+    // Métodos de Salas
+
+    public boolean agregarSala(Sala sala) {
+        if (sala == null || buscarSalaPorId(sala.getIdSala()) != null) {
+            System.out.println("Error al agregar sala: Sala ya existe o es nula.");
+            return false;
+        }
+        listSalas.add(sala);
+        System.out.println("Sala " + sala.getNumeroSala() + " agregada.");
         return true;
     }
-    System.out.println("Fallo al eliminar el horario con ID " + idHorario + ". (Posiblemente no existe)");
-    return false;
-}
 
-    public CitaMedica buscarCitaMedicaPorId(String idCita) {
-        for (CitaMedica cita : listCitasMedicas) {
-            if (cita.getIdCita().equals(idCita)) {
-                return cita;
+    public Sala buscarSalaPorId(String idSala) {
+        for (Sala s : listSalas) {
+            if (s.getIdSala().equals(idSala)) {
+                return s;
             }
         }
         return null;
     }
 
-    public boolean actualizarEstadoCita(String idCita, EstadoCita nuevoEstado) {
-        CitaMedica cita = buscarCitaMedicaPorId(idCita);
-        if (cita == null) {
-            System.out.println("Error: Cita con ID " + idCita + " no encontrada.");
-            return false;
+    public Sala buscarSalaDisponible(LocalDate fecha, LocalTime hora, TipoSala tipoSala) {
+        for (Sala s : listSalas) {
+            if (s.getTipoSala() == tipoSala && s.isEstaDisponible()) { // Usar getTipo()
+                boolean salaOcupadaPorOtraCita = false;
+                for (CitaMedica citaExistente : listCitasMedicas) {
+                    if (citaExistente.getSala() != null &&
+                            citaExistente.getSala().equals(s) &&
+                            citaExistente.getFecha().equals(fecha) &&
+                            citaExistente.getHora().equals(hora) &&
+                            (citaExistente.getEstadoCita() == EstadoCita.PENDIENTE || // Usar getEstado()
+                                    citaExistente.getEstadoCita() == EstadoCita.CONFIRMADA)) { // Usar getEstado()
+                        salaOcupadaPorOtraCita = true;
+                        break;
+                    }
+                }
+                if (!salaOcupadaPorOtraCita) {
+                    return s;
+                }
+            }
         }
-
-        EstadoCita estadoAnterior = cita.getEstadoCita();
-        cita.setEstadoCita(nuevoEstado);
-
-        Medico medicoAsociado = cita.getMedico();
-        if (medicoAsociado != null) {
-            medicoAsociado.actualizarCitaEnLista(cita);
-            medicoAsociado.notificarCambioCita(cita, "actualizada a " + nuevoEstado.name());
-        }
-
-        Paciente pacienteAsociado = cita.getPaciente();
-        if (pacienteAsociado != null) {
-            System.out.println("Notificando al paciente " + pacienteAsociado.getNombre() + " sobre el cambio de estado de su cita.");
-        }
-        System.out.println("Estado de la cita " + idCita + " actualizado a " + nuevoEstado + ".");
-        return true;
+        return null;
     }
-
-
 }
-
 
