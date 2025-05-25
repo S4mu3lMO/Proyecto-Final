@@ -1,4 +1,4 @@
-package co.edu.uniquindio.proyectofinal.model;
+package co.edu.uniquindio.finalproyect.model;
 
 public class Sala {
     private String idSala; // Identificador único de la sala (ej. "S001", "C-205")
@@ -31,11 +31,11 @@ public class Sala {
         this.numeroSala = numeroSala;
     }
 
-    public TipoSala getTipo() {
+    public TipoSala getTipoSala() {
         return tipo;
     }
 
-    public void setTipo(TipoSala tipo) {
+    public void setTipoSala(TipoSala tipo) {
         this.tipo = tipo;
     }
 

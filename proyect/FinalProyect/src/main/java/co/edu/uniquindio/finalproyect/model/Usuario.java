@@ -1,4 +1,6 @@
-package co.edu.uniquindio.proyectofinal.model;
+package co.edu.uniquindio.finalproyect.model;
+
+import java.util.LinkedList;
 
 public abstract class Usuario extends Persona {
     protected String nombreUsuario;
@@ -10,6 +12,7 @@ public abstract class Usuario extends Persona {
         this.nombreUsuario = nombreUsuario;
         this.contrasena = contrasena;
         this.tipoUsuario = tipoUsuario;
+
     }
 
     public String getNombreUsuario() {

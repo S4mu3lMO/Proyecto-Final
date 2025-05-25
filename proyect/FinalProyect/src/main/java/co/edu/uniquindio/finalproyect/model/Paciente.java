@@ -1,4 +1,4 @@
-package co.edu.uniquindio.proyectofinal.model;
+package co.edu.uniquindio.finalproyect.model;
 
 public class Paciente extends Usuario {
     private String numeroSeguroSocial;
@@ -25,4 +25,8 @@ public class Paciente extends Usuario {
     public void setHistorialMedico(HistorialMedico historialMedico) {
         this.historialMedico = historialMedico;
     }
-}
+
+
+
+
+

@@ -1,4 +1,4 @@
-package co.edu.uniquindio.proyectofinal.model;
+package co.edu.uniquindio.finalproyect.model;
 
 public abstract class Persona{
     protected String nombre;

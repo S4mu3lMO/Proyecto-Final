@@ -1,6 +1,6 @@
-package co.edu.uniquindio.proyectofinal.model;
+package co.edu.uniquindio.finalproyect.model;
 
-public class Administrativo extends Usuario {
+public class Administrativo extends Usuario implements iCitaMedicaCRUD{
     private String cargo; // Ej: "Jefe de Sistemas", "Gerente de Operaciones"
     private RolAdministrativo rol; // Un enum para especificar el nivel de rol administrativo
 

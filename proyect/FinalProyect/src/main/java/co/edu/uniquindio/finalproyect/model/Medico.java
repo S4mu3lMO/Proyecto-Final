@@ -1,13 +1,13 @@
-package co.edu.uniquindio.proyectofinal.model;
+package co.edu.uniquindio.finalproyect.model;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 
-public class Medico extends Usuario {
+public class Medico extends Usuario implements iCitaMedicaCRUD {
     private String especialidad;
     private String numeroLicenciaMedica;
-    private LinkedList<CitaMedica> horarioConsultas; // Para administrar sus citas y disponibilidad
+    private LinkedList<CitaMedica> listCitasMedicas; // Para administrar sus citas y disponibilidad
     // Podrías añadir un Map<LocalDate, List<String>> para manejar horarios específicos
 
 
@@ -15,7 +15,7 @@ public class Medico extends Usuario {
         super(nombre, cedula, sexo, edad, nombreUsuario, contrasena, tipoUsuario);
         this.especialidad = especialidad;
         this.numeroLicenciaMedica = numeroLicenciaMedica;
-        this.horarioConsultas = horarioConsultas;
+        this.listCitasMedicas = new LinkedList<>();
     }
 
     public String getEspecialidad() {
@@ -34,20 +34,20 @@ public class Medico extends Usuario {
         this.numeroLicenciaMedica = numeroLicenciaMedica;
     }
 
-    public LinkedList<CitaMedica> getHorarioConsultas() {
-        return horarioConsultas;
+    public LinkedList<CitaMedica> getListCitasMedicas() {
+        return listCitasMedicas;
     }
 
 
     // No se suele tener un setter directo para Listas, es mejor tener métodos para añadir/eliminar
-    public void agregarCitaAHorario(CitaMedica cita) {
-        if (cita != null && !this.horarioConsultas.contains(cita)) {
-            this.horarioConsultas.add(cita);
+    public void agregarListCitasMedicas(CitaMedica cita) {
+        if (cita != null && !this.listCitasMedicas.contains(cita)) {
+            this.listCitasMedicas.add(cita);
         }
     }
 
-    public void removerCitaDeHorario(CitaMedica cita) {
-        this.horarioConsultas.remove(cita);
+    public void removerListCitasMedicas(CitaMedica cita) {
+        this.listCitasMedicas.remove(cita);
     }
 }
 

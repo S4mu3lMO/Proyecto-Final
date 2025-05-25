@@ -1,5 +1,5 @@
-package co.edu.uniquindio.proyectofinal.model;
+package co.edu.uniquindio.finalproyect.model;
 
 public enum EstadoCita {
-    PENDENTE,CONFIRMADA,CANCELADA,FINALIZADA
+    PENDIENTE,CONFIRMADA,CANCELADA,FINALIZADA
 }

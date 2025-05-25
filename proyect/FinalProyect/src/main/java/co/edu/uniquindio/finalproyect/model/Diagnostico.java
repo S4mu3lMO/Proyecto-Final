@@ -1,4 +1,4 @@
-package co.edu.uniquindio.proyectofinal.model;
+package co.edu.uniquindio.finalproyect.model;
 
 import java.time.LocalDate; // Para manejar fechas de forma moderna
 import java.util.ArrayList;
