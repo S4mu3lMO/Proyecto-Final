@@ -1,18 +1,12 @@
 package co.edu.uniquindio.finalproyect.model;
 
-
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class HistorialMedico {
-    private String idHistorial; // Podría ser el mismo ID del paciente o uno único
-    private Paciente pacienteAsociado; // Asociación con el paciente
+    private String idHistorial;
+    private Paciente pacienteAsociado;
     private LinkedList<Diagnostico> listDiagnosticos;
     private LinkedList<Tratamiento> listTratamientos;
-    // private List<DocumentoMedico> documentosAdjuntos; // Para funcionalidad extendida
-    // private List<Alergia> alergias; // Para más detalle
-
 
     public HistorialMedico(String idHistorial, Paciente pacienteAsociado, LinkedList<Diagnostico> listDiagnosticos, LinkedList<Tratamiento> listTratamientos) {
         this.idHistorial = idHistorial;
@@ -53,7 +47,6 @@ public class HistorialMedico {
         this.listTratamientos = listTratamientos;
     }
 
-    // Métodos para agregar información al historial
     public boolean agregarDiagnostico(Diagnostico diagnostico) {
         if (diagnostico != null) {
             this.listDiagnosticos.add(diagnostico);
@@ -70,6 +63,4 @@ public class HistorialMedico {
         return false;
     }
 
-    // Otros métodos de lógica de negocio para el historial
-    // public Diagnostico buscarDiagnosticoPorFecha(String fecha) { ... }
 }

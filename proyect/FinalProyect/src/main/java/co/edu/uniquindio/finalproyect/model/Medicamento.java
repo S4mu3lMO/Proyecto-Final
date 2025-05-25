@@ -3,8 +3,8 @@ package co.edu.uniquindio.finalproyect.model;
 public class Medicamento {
     private String idMedicamento;
     private String nombreComercial;
-    private String presentacion; // Ej: "Tabletas", "Jarabe", "Inyección"
-    private double dosisMiligramos; // Dosis por unidad
+    private String presentacion;
+    private double dosisMiligramos;
     private String fabricante;
     private boolean requiereReceta;
 

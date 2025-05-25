@@ -1,13 +1,13 @@
 package co.edu.uniquindio.finalproyect.model;
 
-public class Administrativo extends Usuario implements iCitaMedicaCRUD{
-    private String cargo; // Ej: "Jefe de Sistemas", "Gerente de Operaciones"
-    private RolAdministrativo rol; // Un enum para especificar el nivel de rol administrativo
+public class Administrativo extends Usuario {
+    private String cargo;
+    private RolAdministrativo rolAdministrativo;
 
-    public Administrativo(String nombre, String cedula, Sexo sexo, int edad, String nombreUsuario, String contrasena, TipoUsuario tipoUsuario, String cargo, RolAdministrativo rol) {
+    public Administrativo(String nombre, String cedula, Sexo sexo, int edad, String nombreUsuario, String contrasena, TipoUsuario tipoUsuario, String cargo, RolAdministrativo rolAdministrativo) {
         super(nombre, cedula, sexo, edad, nombreUsuario, contrasena, tipoUsuario);
         this.cargo = cargo;
-        this.rol = rol;
+        this.rolAdministrativo = rolAdministrativo;
     }
 
     public String getCargo() {
@@ -18,11 +18,11 @@ public class Administrativo extends Usuario implements iCitaMedicaCRUD{
         this.cargo = cargo;
     }
 
-    public RolAdministrativo getRol() {
-        return rol;
+    public RolAdministrativo getRolAdministrativo() {
+        return rolAdministrativo;
     }
 
-    public void setRol(RolAdministrativo rol) {
-        this.rol = rol;
+    public void setRolAdministrativo(RolAdministrativo rol) {
+        this.rolAdministrativo = rolAdministrativo;
     }
 }

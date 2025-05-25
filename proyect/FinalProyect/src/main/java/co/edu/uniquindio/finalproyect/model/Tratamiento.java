@@ -6,11 +6,11 @@ import java.util.LinkedList;
 public class Tratamiento {
     private String idTratamiento;
     private LocalDate fechaInicio;
-    private LocalDate fechaFin; // Puede ser nula si es un tratamiento en curso
+    private LocalDate fechaFin;
     private String descripcion;
-    private LinkedList<Medicamento> listMedicamentos; // Podría ser List<Medicamento> si creas la clase Medicamento
-    private String dosisFrecuencia; // Ej: "1 pastilla cada 8 horas"
-    private Medico medicoPrescriptor; // Referencia al objeto Medico
+    private LinkedList<Medicamento> listMedicamentos;
+    private String dosisFrecuencia;
+    private Medico medicoPrescriptor;
 
     public Tratamiento(String idTratamiento, LocalDate fechaInicio, LocalDate fechaFin, String descripcion, LinkedList<Medicamento> listMedicamentos, String dosisFrecuencia, Medico medicoPrescriptor) {
         this.idTratamiento = idTratamiento;

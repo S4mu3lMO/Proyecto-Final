@@ -25,6 +25,7 @@ public class Paciente extends Usuario {
     public void setHistorialMedico(HistorialMedico historialMedico) {
         this.historialMedico = historialMedico;
     }
+}
 
 
 

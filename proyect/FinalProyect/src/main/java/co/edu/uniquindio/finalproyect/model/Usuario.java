@@ -1,6 +1,5 @@
 package co.edu.uniquindio.finalproyect.model;
 
-import java.util.LinkedList;
 
 public abstract class Usuario extends Persona {
     protected String nombreUsuario;

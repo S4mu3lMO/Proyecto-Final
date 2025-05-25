@@ -4,16 +4,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class CitaMedica {
-    private String idCita; // Identificador único de la cita
-    private Paciente paciente; // Objeto Paciente asociado a esta cita
-    private Medico medico; // Objeto Medico asociado a esta cita
-    private LocalDate fecha; // Fecha de la cita (ej. 2025-05-21)
-    private LocalTime hora; // Hora de la cita (ej. 10:00)
-    private Sala sala; // Objeto Sala donde se realizará la consulta
-    private String motivo; // Breve descripción del motivo de la cita
-    private EstadoCita estado; // Estado actual de la cita (PENDIENTE, CONFIRMADA, CANCELADA, FINALIZADA)
+    private String idCita;
+    private Paciente paciente;
+    private Medico medico;
+    private LocalDate fecha;
+    private LocalTime hora;
+    private Sala sala;
+    private String motivo;
+    private EstadoCita estadoCita;
 
-    public CitaMedica(String idCita, Paciente paciente, Medico medico, LocalDate fecha, LocalTime hora, Sala sala, String motivo, EstadoCita estado) {
+    public CitaMedica(String idCita, Paciente paciente, Medico medico, LocalDate fecha, LocalTime hora, Sala sala, String motivo, EstadoCita estadoCita) {
         this.idCita = idCita;
         this.paciente = paciente;
         this.medico = medico;
@@ -21,7 +21,7 @@ public class CitaMedica {
         this.hora = hora;
         this.sala = sala;
         this.motivo = motivo;
-        this.estado = estado;
+        this.estadoCita = estadoCita;
     }
 
     public String getIdCita() {
@@ -80,11 +80,11 @@ public class CitaMedica {
         this.motivo = motivo;
     }
 
-    public EstadoCita getEstado() {
-        return estado;
+    public EstadoCita getEstadoCita() {
+        return estadoCita;
     }
 
-    public void setEstado(EstadoCita estado) {
-        this.estado = estado;
+    public void setEstadoCita(EstadoCita estado) {
+        this.estadoCita = estadoCita;
     }
 }
