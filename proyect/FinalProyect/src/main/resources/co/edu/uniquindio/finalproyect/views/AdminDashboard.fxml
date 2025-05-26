@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.finalproyect.viewController.AdministradorViewController">
+    <top>
+        <Label text="Panel de Administrador" BorderPane.alignment="CENTER">
+            <font><Font name="System Bold" size="24.0" /></font>
+        </Label>
+    </top>
+    <left>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <Label text="Gestión de Usuarios:"/>
+            <Button fx:id="btnRegistrarMedico" text="Registrar Médico" onAction="#handleRegistrarMedico"/>
+            <Button fx:id="btnGestionarPacientes" text="Gestionar Pacientes" onAction="#handleGestionarPacientes"/>
+            <Label text="Gestión del Sistema:"/>
+            <Button fx:id="btnGestionarSalas" text="Gestionar Salas" onAction="#handleGestionarSalas"/>
+            <Button fx:id="btnGenerarReportes" text="Generar Reportes" onAction="#handleGenerarReportes"/>
+            <Button fx:id="btnCerrarSesionAdmin" text="Cerrar Sesión" onAction="#handleCerrarSesion"/>
+        </VBox>
+    </left>
+    <center>
+        <Label text="Contenido principal del administrador..."/>
+    </center>
+</BorderPane>

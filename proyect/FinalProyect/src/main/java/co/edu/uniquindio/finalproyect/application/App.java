@@ -1,86 +1,141 @@
 package co.edu.uniquindio.finalproyect.application;
 
+import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
+import co.edu.uniquindio.finalproyect.model.Usuario;
+import co.edu.uniquindio.finalproyect.model.TipoUsuario;
 import co.edu.uniquindio.finalproyect.singleton.SistemaHospitalarioSingleton;
-import co.edu.uniquindio.finalproyect.viewController.LoginViewController;
+import co.edu.uniquindio.finalproyect.viewController.*; // Importa todos los view controllers
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane; // O el tipo de layout que uses en tu FXML de login
+import javafx.scene.layout.AnchorPane; // O el tipo de layout que uses
+import javafx.scene.layout.BorderPane; // Para un layout más flexible en dashboards
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class App extends Application {
 
-    private Stage primaryStage; // La ventana principal de la aplicación
+    private Stage primaryStage;
+    private SistemaHospitalario sistemaHospitalario;
 
     @Override
     public void start(Stage stage) throws IOException {
         this.primaryStage = stage;
         this.primaryStage.setTitle("Sistema de Gestión Hospitalaria");
 
-        // 1. Inicializar el Singleton de tu sistema
-        // Es crucial que esto se haga una sola vez al inicio de la aplicación
+        // Inicializar el Singleton y obtener la instancia del sistema
         SistemaHospitalarioSingleton.getInstance().inicializarSistema();
+        this.sistemaHospitalario = SistemaHospitalarioSingleton.getInstance().getSistemaHospitalario();
 
-        // 2. Cargar la vista de login
-        mostrarLoginView();
+        mostrarWelcomeView();
     }
 
-    /**
-     * Muestra la vista de inicio de sesión.
-     */
+    public void mostrarWelcomeView() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/views/WelcomeView.fxml"));
+            AnchorPane welcomeLayout = loader.load();
+            Scene scene = new Scene(welcomeLayout);
+
+            WelcomeViewController controller = loader.getController();
+            controller.setApp(this);
+
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error al cargar WelcomeView.fxml: " + e.getMessage());
+        }
+    }
+
     public void mostrarLoginView() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            // La ruta al FXML es crucial: /views/LoginView.fxml
             loader.setLocation(getClass().getResource("/views/LoginView.fxml"));
-
-            // Carga el layout raíz de tu LoginView.fxml (puede ser AnchorPane, VBox, etc.)
-            AnchorPane rootLayout = (AnchorPane) loader.load();
+            AnchorPane rootLayout = loader.load(); // Ajusta si tu FXML usa otro layout raíz
             Scene scene = new Scene(rootLayout);
 
-            // Obtiene el controlador de la vista de login
             LoginViewController loginViewController = loader.getController();
-            // Le pasa una referencia a esta clase 'App' para que el controlador pueda cambiar la vista
             loginViewController.setApp(this);
 
             primaryStage.setScene(scene);
             primaryStage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
-            // Considera usar un Alert para informar al usuario si no se puede cargar la vista
             System.err.println("Error al cargar LoginView.fxml: " + e.getMessage());
         }
     }
 
-    /**
-     * Muestra la vista principal de la aplicación después de un login exitoso.
-     */
-    public void mostrarMainView() {
+    public void mostrarDashboard(Usuario usuarioLogueado) {
+        if (usuarioLogueado == null) {
+            System.err.println("No se puede mostrar el dashboard, usuario nulo.");
+            mostrarLoginView(); // Volver al login si hay un problema
+            return;
+        }
+
+        String fxmlFile = "";
+        Object controllerInstance = null;
+
         try {
             FXMLLoader loader = new FXMLLoader();
-            // Asume que tienes una vista principal llamada MainView.fxml
-            loader.setLocation(getClass().getResource("/views/MainView.fxml"));
+            TipoUsuario tipoUsuario = usuarioLogueado.getTipoUsuario();
 
-            // Carga el layout raíz de tu MainView.fxml (puede ser BorderPane, VBox, etc.)
-            AnchorPane mainLayout = (AnchorPane) loader.load(); // Ajusta el tipo de layout si es diferente
-            Scene scene = new Scene(mainLayout);
+            switch (tipoUsuario) {
+                case ADMINISTRADOR:
+                    fxmlFile = "/views/AdminDashboard.fxml";
+                    loader.setLocation(getClass().getResource(fxmlFile));
+                    BorderPane adminLayout = loader.load(); // Usar BorderPane o el layout que elijas
+                    Scene adminScene = new Scene(adminLayout);
+                    primaryStage.setScene(adminScene);
+                    AdministradorViewController adminController = loader.getController();
+                    adminController.setApp(this);
+                    adminController.setUsuarioLogueado(usuarioLogueado);
+                    adminController.inicializarDatos(); // Nuevo método para cargar datos específicos
+                    controllerInstance = adminController;
+                    break;
+                case MEDICO:
+                    fxmlFile = "/views/MedicoDashboard.fxml";
+                    loader.setLocation(getClass().getResource(fxmlFile));
+                    BorderPane medicoLayout = loader.load();
+                    Scene medicoScene = new Scene(medicoLayout);
+                    primaryStage.setScene(medicoScene);
+                    MedicoViewController medicoController = loader.getController();
+                    medicoController.setApp(this);
+                    medicoController.setUsuarioLogueado(usuarioLogueado);
+                    medicoController.inicializarDatos();
+                    controllerInstance = medicoController;
+                    break;
+                case PACIENTE:
+                    fxmlFile = "/views/PacienteDashboard.fxml";
+                    loader.setLocation(getClass().getResource(fxmlFile));
+                    BorderPane pacienteLayout = loader.load();
+                    Scene pacienteScene = new Scene(pacienteLayout);
+                    primaryStage.setScene(pacienteScene);
+                    PacienteViewController pacienteController = loader.getController();
+                    pacienteController.setApp(this);
+                    pacienteController.setUsuarioLogueado(usuarioLogueado);
+                    pacienteController.inicializarDatos();
+                    controllerInstance = pacienteController;
+                    break;
+                default:
+                    System.err.println("Tipo de usuario desconocido: " + tipoUsuario);
+                    mostrarLoginView();
+                    return;
+            }
 
-            // Opcional: Si tu MainViewController necesita la instancia de App o del sistema
-            // MainViewController mainViewController = loader.getController();
-            // mainViewController.setApp(this);
-            // mainViewController.setSistemaHospitalario(SistemaHospitalarioSingleton.getInstance().getSistemaHospitalario());
-
-            primaryStage.setScene(scene);
-            primaryStage.setMaximized(true); // Opcional: maximizar la ventana principal
+            primaryStage.setTitle("Dashboard - " + tipoUsuario.name());
+            primaryStage.setMaximized(true); // Opcional: maximizar la ventana
             primaryStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Error al cargar MainView.fxml: " + e.getMessage());
+            System.err.println("Error al cargar " + fxmlFile + ": " + e.getMessage());
         }
+    }
+
+    public SistemaHospitalario getSistemaHospitalario() {
+        return sistemaHospitalario;
     }
 
     public static void main(String[] args) {

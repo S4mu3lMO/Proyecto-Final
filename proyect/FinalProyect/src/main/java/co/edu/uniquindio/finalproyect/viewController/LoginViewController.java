@@ -2,8 +2,8 @@ package co.edu.uniquindio.finalproyect.viewController;
 
 import co.edu.uniquindio.finalproyect.application.App;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
-import co.edu.uniquindio.finalproyect.model.Usuario; // Asegúrate de importar tu clase Usuario
-import co.edu.uniquindio.finalproyect.singleton.SistemaHospitalarioSingleton;
+import co.edu.uniquindio.finalproyect.model.Usuario;
+import co.edu.uniquindio.finalproyect.singleton.SistemaHospitalarioSingleton; // Ya lo tenías
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -18,14 +18,16 @@ public class LoginViewController {
     @FXML
     private PasswordField pwdContrasena;
 
-    private App mainApp; // Referencia a la clase App para cambiar de vista
-    private SistemaHospitalario sistemaHospitalario; // Referencia a tu modelo de negocio
+    private App mainApp;
+    private SistemaHospitalario sistemaHospitalario;
 
-    // Este método es llamado por la clase App para inyectar la referencia
     public void setApp(App mainApp) {
         this.mainApp = mainApp;
-        // Obtener la instancia de tu SistemaHospitalario desde el Singleton
-        this.sistemaHospitalario = SistemaHospitalarioSingleton.getInstance().getSistemaHospitalario();
+        // Obtener la instancia de tu SistemaHospitalario
+        this.sistemaHospitalario = mainApp.getSistemaHospitalario();
+        if (this.sistemaHospitalario == null) { // Fallback por si acaso
+            this.sistemaHospitalario = SistemaHospitalarioSingleton.getInstance().getSistemaHospitalario();
+        }
     }
 
     @FXML
@@ -33,34 +35,36 @@ public class LoginViewController {
         String nombreUsuario = txtUsuario.getText();
         String contrasena = pwdContrasena.getText();
 
-        // **Lógica de Autenticación**
-        // Llama al método de tu SistemaHospitalario para verificar las credenciales
-        Usuario usuarioLogueado = sistemaHospitalario.validarCredenciales(nombreUsuario, contrasena);
+        if (nombreUsuario.isEmpty() || contrasena.isEmpty()) {
+            mostrarAlerta("Error de Validación", "Campos vacíos", "Por favor, ingrese usuario y contraseña.");
+            return;
+        }
+
+        Usuario usuarioLogueado = sistemaHospitalario.validarCredenciales(nombreUsuario, contrasena); //
 
         if (usuarioLogueado != null) {
-            // Login exitoso
-            System.out.println("¡Login exitoso! Usuario: " + usuarioLogueado.getNombreUsuario());
-            // Puedes almacenar el usuario logueado en el Singleton si lo necesitas en otras partes
-            // SistemaHospitalarioSingleton.getInstance().setUsuarioLogueado(usuarioLogueado);
+            System.out.println("¡Login exitoso! Usuario: " + usuarioLogueado.getNombreUsuario() + " Tipo: " + usuarioLogueado.getTipoUsuario());
+            // Guardar el usuario logueado en el Singleton para acceso global si es necesario
+            // SistemaHospitalarioSingleton.getInstance().setUsuarioLogueado(usuarioLogueado); // Tú decides si esto es útil
 
             if (mainApp != null) {
-                mainApp.mostrarMainView(); // Navega a la vista principal
+                mainApp.mostrarDashboard(usuarioLogueado); // Navega al dashboard correspondiente
             }
         } else {
-            // Login fallido
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error de Autenticación");
-            alert.setHeaderText("Credenciales inválidas");
-            alert.setContentText("El nombre de usuario o la contraseña son incorrectos.");
-            alert.showAndWait();
+            mostrarAlerta("Error de Autenticación", "Credenciales inválidas", "El nombre de usuario o la contraseña son incorrectos.");
         }
     }
 
-    // Otros métodos de inicialización o manejo de eventos si los necesitas
+    private void mostrarAlerta(String titulo, String cabecera, String contenido) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(titulo);
+        alert.setHeaderText(cabecera);
+        alert.setContentText(contenido);
+        alert.showAndWait();
+    }
+
     @FXML
     void initialize() {
-        // Este método se llama automáticamente después de que todos los @FXML son inyectados
-        // No es el lugar para inicializar `sistemaHospitalario` directamente si se inyecta con `setApp`.
-        // La inicialización de `sistemaHospitalario` debería ocurrir después de `setApp`.
+        // Código de inicialización si es necesario
     }
 }
