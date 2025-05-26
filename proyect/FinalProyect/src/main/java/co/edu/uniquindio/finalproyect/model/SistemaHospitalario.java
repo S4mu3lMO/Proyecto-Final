@@ -940,7 +940,19 @@ public class SistemaHospitalario {
         System.out.println("Reporte de ocupación de salas generado para el " + fechaReporte + ".");
         return reporte.toString();
     }
-}
+
+
+        public Usuario validarCredenciales(String nombreUsuario, String contrasena) {
+            for (Usuario u : listUsuarios) {
+                if (u.getNombreUsuario().equals(nombreUsuario) && u.getContrasena().equals(contrasena)) {
+                    return u;
+                }
+            }
+            return null;
+        }
+
+    }
+
 
 
 
