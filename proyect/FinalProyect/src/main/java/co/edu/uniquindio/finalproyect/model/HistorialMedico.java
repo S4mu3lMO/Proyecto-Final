@@ -11,8 +11,8 @@ public class HistorialMedico {
     public HistorialMedico(String idHistorial, Paciente pacienteAsociado, LinkedList<Diagnostico> listDiagnosticos, LinkedList<Tratamiento> listTratamientos) {
         this.idHistorial = idHistorial;
         this.pacienteAsociado = pacienteAsociado;
-        this.listDiagnosticos = listDiagnosticos;
-        this.listTratamientos = listTratamientos;
+        this.listDiagnosticos = new LinkedList<>();
+        this.listTratamientos = new LinkedList<>();
     }
 
     public String getIdHistorial() {

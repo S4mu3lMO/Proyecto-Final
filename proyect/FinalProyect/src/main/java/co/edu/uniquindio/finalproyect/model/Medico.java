@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 
-public class Medico extends Usuario implements iGestionHorarios, iNotificacionCita{
+public class Medico extends Usuario implements iNotificacionCita{
     private String especialidad;
     private String numeroLicenciaMedica;
     private LinkedList<CitaMedica> listCitasMedicas;
@@ -20,6 +20,7 @@ public class Medico extends Usuario implements iGestionHorarios, iNotificacionCi
         this.listCitasMedicas = new LinkedList<>();
         this.listHorariosDisponibilidad = new LinkedList<>();
     }
+
 
     public void setListCitasMedicas(LinkedList<CitaMedica> listCitasMedicas) {
         this.listCitasMedicas = listCitasMedicas;
@@ -60,7 +61,6 @@ public class Medico extends Usuario implements iGestionHorarios, iNotificacionCi
     }
 
 
-    @Override
     public boolean agregarHorarioDisponibilidad(HorarioDisponibilidad horario) {
         if (horario == null) {
             return false;
@@ -75,7 +75,6 @@ public class Medico extends Usuario implements iGestionHorarios, iNotificacionCi
         return this.listHorariosDisponibilidad.add(horario);
     }
 
-    @Override
     public HorarioDisponibilidad buscarHorarioDisponibilidad(String idHorario) {
         for (HorarioDisponibilidad h : listHorariosDisponibilidad) {
             if (h.getIdHorario().equals(idHorario)) {
@@ -85,7 +84,7 @@ public class Medico extends Usuario implements iGestionHorarios, iNotificacionCi
         return null;
     }
 
-    @Override
+
     public boolean actualizarHorarioDisponibilidad(HorarioDisponibilidad horarioActualizado) {
         if (horarioActualizado == null) {
             return false;
@@ -100,7 +99,7 @@ public class Medico extends Usuario implements iGestionHorarios, iNotificacionCi
         return false;
     }
 
-    @Override
+
     public boolean eliminarHorarioDisponibilidad(String idHorario) {
         HorarioDisponibilidad horarioAEliminar = buscarHorarioDisponibilidad(idHorario);
         if (horarioAEliminar != null) {
@@ -109,7 +108,7 @@ public class Medico extends Usuario implements iGestionHorarios, iNotificacionCi
         return false;
     }
 
-    @Override
+
     public LinkedList<HorarioDisponibilidad> getListHorariosDisponibilidad() {
         return listHorariosDisponibilidad;
     }
@@ -127,17 +126,17 @@ public class Medico extends Usuario implements iGestionHorarios, iNotificacionCi
     }
 
 
-    public boolean actualizarCitaEnLista(CitaMedica citaActualizada) {
+    public void actualizarCitaEnLista(CitaMedica citaActualizada) {
         if (citaActualizada == null) {
-            return false;
+            return;
         }
         for (int i = 0; i < listCitasMedicas.size(); i++) {
             if (listCitasMedicas.get(i).getIdCita().equals(citaActualizada.getIdCita())) {
                 listCitasMedicas.set(i, citaActualizada);
-                return true;
+                System.out.println("Cita " + citaActualizada.getIdCita() + " actualizada en la lista del médico " + this.getNombre());
+                return;
             }
         }
-        return false;
     }
 }
 

@@ -8,6 +8,7 @@ public class Paciente extends Usuario implements iNotificacionCita{
         super(nombre, cedula, sexo, edad, nombreUsuario, contrasena, tipoUsuario);
         this.numeroSeguroSocial = numeroSeguroSocial;
         this.historialMedico = historialMedico;
+
     }
 
     public String getNumeroSeguroSocial() {
@@ -29,13 +30,15 @@ public class Paciente extends Usuario implements iNotificacionCita{
 
     @Override
     public void notificarCambioCita(CitaMedica cita, String mensaje) {
-        if (cita != null && this.equals(cita.getPaciente())) {
-            System.out.println("--- NOTIFICACIÓN para Paciente " + this.getNombre() + " ---");
-            System.out.println("Su cita con Dr(a). " + cita.getMedico().getNombre() +
-                    " (" + cita.getFecha() + " " + cita.getHora() + ") ha sido " + mensaje + ".");
-            System.out.println("Estado actual: " + cita.getEstadoCita());
-            System.out.println("----------------------------------------");
-        }
+        System.out.println("--- Notificación de Cita para " + this.getNombre() + " ---");
+        System.out.println("Mensaje: " + mensaje);
+        System.out.println("Detalles de la Cita ID: " + cita.getIdCita());
+        System.out.println("Médico: Dr. " + cita.getMedico().getNombre());
+        System.out.println("Fecha: " + cita.getFecha());
+        System.out.println("Hora: " + cita.getHora());
+        System.out.println("Sala: " + cita.getSala().getNumeroSala() + " (" + cita.getSala().getTipoSala() + ")");
+        System.out.println("Estado Actual: " + cita.getEstadoCita());
+        System.out.println("----------------------------------------");
     }
 }
 

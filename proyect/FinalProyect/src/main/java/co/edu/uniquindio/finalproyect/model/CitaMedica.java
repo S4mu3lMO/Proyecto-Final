@@ -84,7 +84,7 @@ public class CitaMedica {
         return estadoCita;
     }
 
-    public void setEstadoCita(EstadoCita estado) {
+    public void setEstadoCita(EstadoCita estadoCita) {
         this.estadoCita = estadoCita;
     }
 }

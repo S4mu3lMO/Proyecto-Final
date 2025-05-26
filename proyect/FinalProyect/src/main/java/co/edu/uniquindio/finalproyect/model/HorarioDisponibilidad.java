@@ -1,8 +1,8 @@
-
 package co.edu.uniquindio.finalproyect.model;
 
 import java.time.LocalTime;
 import java.time.DayOfWeek;
+import java.util.UUID;
 
 public class HorarioDisponibilidad {
     private String idHorario;
@@ -10,13 +10,19 @@ public class HorarioDisponibilidad {
     private LocalTime horaInicio;
     private LocalTime horaFin;
 
+    public HorarioDisponibilidad(DayOfWeek diaSemana, LocalTime horaInicio, LocalTime horaFin) {
+        this.idHorario = UUID.randomUUID().toString();
+        this.diaSemana = diaSemana;
+        this.horaInicio = horaInicio;
+        this.horaFin = horaFin;
+    }
+
     public HorarioDisponibilidad(String idHorario, DayOfWeek diaSemana, LocalTime horaInicio, LocalTime horaFin) {
         this.idHorario = idHorario;
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
     }
-
 
     public String getIdHorario() { return idHorario; }
     public void setIdHorario(String idHorario) { this.idHorario = idHorario; }

@@ -22,7 +22,7 @@ public class Administrativo extends Usuario {
         return rolAdministrativo;
     }
 
-    public void setRolAdministrativo(RolAdministrativo rol) {
+    public void setRolAdministrativo(RolAdministrativo rolAdministrativo) {
         this.rolAdministrativo = rolAdministrativo;
     }
 }
