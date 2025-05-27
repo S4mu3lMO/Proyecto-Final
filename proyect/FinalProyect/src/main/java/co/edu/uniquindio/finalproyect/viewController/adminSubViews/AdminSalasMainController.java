@@ -5,7 +5,7 @@ import co.edu.uniquindio.finalproyect.model.Sala;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
 import co.edu.uniquindio.finalproyect.model.TipoSala; // Para la columna de la tabla
 import co.edu.uniquindio.finalproyect.viewController.AdministradorViewController;
-import co.edu.uniquindio.finalproyect.viewController.SubViewControllerBase;
+import co.edu.uniquindio.finalproyect.viewController.SubViewControllerBase; // Tu interfaz base
 import co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms.SalaFormController;
 
 import javafx.collections.FXCollections;
@@ -70,7 +70,8 @@ public class AdminSalasMainController implements SubViewControllerBase {
 
     @FXML
     public void initialize() {
-        // Lógica de inicialización si es necesaria y no depende de las inyecciones de setMainApp, etc.
+        // Este método es llamado por FXMLLoader.
+        // La inicialización principal que depende de referencias externas está en inicializarSubView().
     }
 
     private void cargarSalasEnTabla() {
@@ -80,13 +81,13 @@ public class AdminSalasMainController implements SubViewControllerBase {
             tablaSalas.refresh();
         } else {
             if (administradorViewController != null)
-                administradorViewController.mostrarAlerta("Error", "Error Interno", "No se pudo acceder a los datos del sistema (salas).", Alert.AlertType.ERROR);
+                administradorViewController.mostrarAlerta("Error", "Error Interno", "No se pudo acceder a los datos del sistema para cargar las salas.", Alert.AlertType.ERROR);
         }
     }
 
     @FXML
     void handleCrearSala(ActionEvent event) {
-        mostrarDialogoFormularioSala(null);
+        mostrarDialogoFormularioSala(null); // null indica que es para una nueva sala
     }
 
     @FXML
@@ -115,12 +116,11 @@ public class AdminSalasMainController implements SubViewControllerBase {
                 if (eliminada) {
                     if (administradorViewController != null)
                         administradorViewController.mostrarAlerta("Éxito", "Sala Eliminada", "La sala " + salaSeleccionada.getNumeroSala() + " ha sido eliminada.", Alert.AlertType.INFORMATION);
-                    cargarSalasEnTabla();
+                    cargarSalasEnTabla(); // Refrescar la tabla
                 } else {
-                    // El método eliminarSala en SistemaHospitalario ya imprime un mensaje si no se puede eliminar.
-                    // Podrías capturar una excepción o un mensaje de retorno más específico si lo modificas.
+                    // El método eliminarSala en SistemaHospitalario ya imprime un mensaje si no se puede eliminar debido a citas.
                     if (administradorViewController != null)
-                        administradorViewController.mostrarAlerta("Error", "Error al Eliminar", "No se pudo eliminar la sala. Es posible que tenga citas futuras activas.", Alert.AlertType.ERROR);
+                        administradorViewController.mostrarAlerta("Error", "Error al Eliminar", "No se pudo eliminar la sala. Es posible que tenga citas futuras activas o no fue encontrada.", Alert.AlertType.ERROR);
                 }
             }
         } else {
@@ -131,15 +131,17 @@ public class AdminSalasMainController implements SubViewControllerBase {
 
     private void mostrarDialogoFormularioSala(Sala sala) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/SalaFormView.fxml")); // Ajusta la ruta si es necesario
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/SalaFormView.fxml")); // Asegúrate que la ruta sea correcta
             Parent page = loader.load();
             Stage dialogStage = new Stage();
             dialogStage.setTitle(sala == null ? "Registrar Nueva Sala" : "Actualizar Sala");
             dialogStage.initModality(Modality.WINDOW_MODAL);
-            // Establecer owner para el diálogo
+
+            // Establecer el owner para el diálogo modal
             if (mainApp != null && mainApp.getPrimaryStage() != null) {
                 dialogStage.initOwner(mainApp.getPrimaryStage());
             } else if (administradorViewController != null && administradorViewController.getMainApp() != null && administradorViewController.getMainApp().getPrimaryStage() != null) {
+                // Si mainApp no está directamente disponible, intentar obtenerlo a través del admin controller
                 dialogStage.initOwner(administradorViewController.getMainApp().getPrimaryStage());
             }
 
@@ -150,10 +152,11 @@ public class AdminSalasMainController implements SubViewControllerBase {
             SalaFormController controller = loader.getController();
             controller.setDialogStage(dialogStage);
             controller.setSistemaHospitalario(this.sistemaHospitalario);
-            controller.setSalaParaEdicion(sala);
-            controller.setAdminSalasMainController(this);
+            controller.setSalaParaEdicion(sala); // Pasar la sala para edición (o null si es nueva)
+            controller.setAdminSalasMainController(this); // Para poder refrescar la tabla
 
             dialogStage.showAndWait();
+            // La tabla se refrescará desde SalaFormController si la operación es exitosa
         } catch (IOException e) {
             e.printStackTrace();
             if (administradorViewController != null)
@@ -165,6 +168,7 @@ public class AdminSalasMainController implements SubViewControllerBase {
         }
     }
 
+    // Este método puede ser llamado por SalaFormController después de una operación exitosa
     public void refrescarTablaSalas() {
         cargarSalasEnTabla();
     }

@@ -8,8 +8,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.Callback;
 
-import java.util.stream.Collectors;
-
 public class MedicoVerHistorialController implements MedicoSubViewControllerBase {
 
     private App mainApp;

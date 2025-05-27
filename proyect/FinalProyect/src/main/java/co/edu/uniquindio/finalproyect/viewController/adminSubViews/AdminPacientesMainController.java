@@ -21,6 +21,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
+import co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms.PacienteFormController;
 import javafx.stage.Stage;
 
 import java.io.IOException;

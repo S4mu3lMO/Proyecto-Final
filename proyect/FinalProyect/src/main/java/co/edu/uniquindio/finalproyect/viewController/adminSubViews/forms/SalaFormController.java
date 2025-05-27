@@ -23,7 +23,7 @@ public class SalaFormController {
     @FXML private TextField txtCapacidadSala;
     @FXML private CheckBox checkEstaDisponible;
     @FXML private Button btnGuardarSala;
-    @FXML private Button btnCancelarSala;
+    @FXML private Button btnCancelarSala; // Asegúrate que este fx:id exista en SalaFormView.fxml
 
     private Stage dialogStage;
     private SistemaHospitalario sistemaHospitalario;
@@ -45,7 +45,7 @@ public class SalaFormController {
         if (sala != null) {
             esNueva = false;
             lblTituloFormSala.setText("Actualizar Sala");
-            // El ID de la sala no se edita generalmente, se usa para buscarla.
+            // El ID de la sala no se edita directamente aquí, se usa para identificarla.
             txtNumeroSala.setText(sala.getNumeroSala());
             cbTipoSala.setValue(sala.getTipoSala());
             txtCapacidadSala.setText(String.valueOf(sala.getCapacidad()));
@@ -53,25 +53,29 @@ public class SalaFormController {
         } else {
             esNueva = true;
             lblTituloFormSala.setText("Registrar Nueva Sala");
-            checkEstaDisponible.setSelected(true); // Por defecto disponible al crear
+            // Valores por defecto para una nueva sala
+            txtNumeroSala.clear();
+            cbTipoSala.getSelectionModel().clearSelection();
+            txtCapacidadSala.clear();
+            checkEstaDisponible.setSelected(true); // Por defecto, una nueva sala está disponible
         }
     }
 
     @FXML
     void handleGuardarSala(ActionEvent event) {
         if (validarCamposSala()) {
-            String numeroSala = txtNumeroSala.getText();
+            String numeroSala = txtNumeroSala.getText().trim();
             TipoSala tipoSala = cbTipoSala.getValue();
-            int capacidad = Integer.parseInt(txtCapacidadSala.getText()); // Ya validado
+            int capacidad = Integer.parseInt(txtCapacidadSala.getText().trim()); // Ya validado
             boolean disponible = checkEstaDisponible.isSelected();
 
             Sala salaEditada;
             if (esNueva) {
-                // El ID se genera automáticamente en el constructor de Sala que no recibe ID.
+                // El ID se genera automáticamente en el constructor de Sala que solo toma numero, tipo y capacidad.
                 salaEditada = new Sala(numeroSala, tipoSala, capacidad);
-                salaEditada.setEstaDisponible(disponible); // Asegurar que se setee la disponibilidad
+                salaEditada.setEstaDisponible(disponible);
             } else {
-                // Usamos el constructor que toma todos los parámetros, incluyendo el ID original
+                // Para actualizar, se utiliza el constructor que incluye el ID original para identificar la sala a modificar.
                 salaEditada = new Sala(salaOriginal.getIdSala(), numeroSala, tipoSala, capacidad, disponible); //
             }
 
@@ -89,14 +93,14 @@ public class SalaFormController {
                 }
                 dialogStage.close();
             } else {
-                // El método agregarSala/actualizarSala en SistemaHospitalario ya imprime mensajes de error.
-                mostrarAlerta("Error", "Operación Fallida", "No se pudo " + (esNueva ? "registrar" : "actualizar") + " la sala. Verifique si el número de sala ya existe.", Alert.AlertType.ERROR);
+                // Los métodos agregarSala/actualizarSala en SistemaHospitalario ya imprimen mensajes si hay errores (ej. ID o número duplicado).
+                mostrarAlerta("Error", "Operación Fallida", "No se pudo " + (esNueva ? "registrar" : "actualizar") + " la sala. Verifique si el número de sala ya existe o si el ID es incorrecto para la actualización.", Alert.AlertType.ERROR);
             }
         }
     }
 
     @FXML
-    void handleCancelarSala(ActionEvent event) {
+    void handleCancelarSala(ActionEvent event) { // Conectado al botón Cancelar del FXML
         if (dialogStage != null) {
             dialogStage.close();
         }
@@ -104,14 +108,20 @@ public class SalaFormController {
 
     private boolean validarCamposSala() {
         String mensajeError = "";
-        if (txtNumeroSala.getText() == null || txtNumeroSala.getText().trim().isEmpty()) mensajeError += "El número de sala es obligatorio.\n";
-        if (cbTipoSala.getValue() == null) mensajeError += "El tipo de sala es obligatorio.\n";
+        if (txtNumeroSala.getText() == null || txtNumeroSala.getText().trim().isEmpty()) {
+            mensajeError += "El número de sala es obligatorio.\n";
+        }
+        if (cbTipoSala.getValue() == null) {
+            mensajeError += "El tipo de sala es obligatorio.\n";
+        }
         if (txtCapacidadSala.getText() == null || txtCapacidadSala.getText().trim().isEmpty()) {
             mensajeError += "La capacidad es obligatoria.\n";
         } else {
             try {
                 int capacidad = Integer.parseInt(txtCapacidadSala.getText().trim());
-                if (capacidad <= 0) mensajeError += "La capacidad debe ser un número positivo.\n";
+                if (capacidad <= 0) {
+                    mensajeError += "La capacidad debe ser un número positivo.\n";
+                }
             } catch (NumberFormatException e) {
                 mensajeError += "La capacidad debe ser un número válido.\n";
             }

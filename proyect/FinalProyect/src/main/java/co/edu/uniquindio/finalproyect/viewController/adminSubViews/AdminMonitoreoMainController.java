@@ -1,12 +1,11 @@
-package co.edu.uniquindio.finalproyect.viewController.adminSubViews; // O el paquete que uses
+package co.edu.uniquindio.finalproyect.viewController.adminSubViews;
 
 import co.edu.uniquindio.finalproyect.application.App;
 import co.edu.uniquindio.finalproyect.model.CitaMedica;
 import co.edu.uniquindio.finalproyect.model.Medico;
-// import co.edu.uniquindio.finalproyect.model.Paciente; // No se usa directamente aquí, se busca por cédula
-import co.edu.uniquindio.finalproyect.model.SistemaHospitalario; //
+import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
 import co.edu.uniquindio.finalproyect.viewController.AdministradorViewController;
-import co.edu.uniquindio.finalproyect.viewController.SubViewControllerBase; // Tu interfaz base
+import co.edu.uniquindio.finalproyect.viewController.SubViewControllerBase;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,23 +14,24 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label; // Aunque no haya un Label fx:id específico aquí, es buena práctica importarlo si usas Labels en el FXML
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage; // Necesario para initOwner en Alerta
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.LinkedList; // Se usa en el método obtenerMedicosDisponibles de SistemaHospitalario
+import java.util.LinkedList;
 
 public class AdminMonitoreoMainController implements SubViewControllerBase {
 
     private App mainApp;
     private SistemaHospitalario sistemaHospitalario;
-    private AdministradorViewController administradorViewController;
+    // Ya no necesitamos administradorViewController para las alertas locales
+    // private AdministradorViewController administradorViewController;
 
     @FXML private DatePicker datePickerFechaDisponibilidad;
     @FXML private TextField txtHoraDisponibilidad;
@@ -56,7 +56,7 @@ public class AdminMonitoreoMainController implements SubViewControllerBase {
 
     @Override
     public void setAdministradorViewController(AdministradorViewController adminController) {
-        this.administradorViewController = adminController;
+        // this.administradorViewController = adminController; // Ya no es necesario para las alertas
     }
 
     @Override
@@ -68,14 +68,13 @@ public class AdminMonitoreoMainController implements SubViewControllerBase {
         listaObservableMedicosDisponibles = FXCollections.observableArrayList();
         tablaMedicosDisponibles.setItems(listaObservableMedicosDisponibles);
 
-        datePickerFechaDisponibilidad.setValue(LocalDate.now()); // Fecha actual por defecto
-        txtHoraDisponibilidad.setText(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:00"))); // Hora actual redondeada por defecto
+        datePickerFechaDisponibilidad.setValue(LocalDate.now());
+        txtHoraDisponibilidad.setText(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:00")));
     }
 
     @FXML
     public void initialize() {
-        // Este método es llamado por FXMLLoader después de que los @FXML son inyectados.
-        // La lógica principal de inicialización que depende de mainApp, etc., está en inicializarSubView().
+        // Lógica de inicialización si es necesaria
     }
 
     @FXML
@@ -85,7 +84,7 @@ public class AdminMonitoreoMainController implements SubViewControllerBase {
         String especialidad = txtEspecialidadFiltro.getText();
 
         if (fecha == null || strHora == null || strHora.trim().isEmpty()) {
-            mostrarAlertaLocal("Campos Vacíos", "Fecha y Hora Requeridas", "Por favor, ingrese la fecha y hora para buscar disponibilidad.", Alert.AlertType.WARNING);
+            mostrarAlerta("Campos Vacíos", "Fecha y Hora Requeridas", "Por favor, ingrese la fecha y hora para buscar disponibilidad.", Alert.AlertType.WARNING);
             return;
         }
 
@@ -93,16 +92,16 @@ public class AdminMonitoreoMainController implements SubViewControllerBase {
         try {
             hora = LocalTime.parse(strHora.trim(), timeFormatter);
         } catch (DateTimeParseException e) {
-            mostrarAlertaLocal("Formato Inválido", "Formato de Hora Incorrecto", "Use HH:mm para la hora (ej. 09:00, 14:30).", Alert.AlertType.ERROR);
+            mostrarAlerta("Formato Inválido", "Formato de Hora Incorrecto", "Use HH:mm para la hora (ej. 09:00, 14:30).", Alert.AlertType.ERROR);
             return;
         }
 
-        LinkedList<Medico> medicosEncontrados = sistemaHospitalario.obtenerMedicosDisponibles(fecha, hora, (especialidad == null || especialidad.trim().isEmpty()) ? null : especialidad.trim()); //
+        LinkedList<Medico> medicosEncontrados = sistemaHospitalario.obtenerMedicosDisponibles(fecha, hora, (especialidad == null || especialidad.trim().isEmpty()) ? null : especialidad.trim());
         listaObservableMedicosDisponibles.setAll(medicosEncontrados);
         tablaMedicosDisponibles.refresh();
 
         if (medicosEncontrados.isEmpty()) {
-            mostrarAlertaLocal("Sin Resultados", "No hay médicos disponibles", "No se encontraron médicos con los criterios especificados para el " + fecha + " a las " + hora + ".", Alert.AlertType.INFORMATION);
+            mostrarAlerta("Sin Resultados", "No hay médicos disponibles", "No se encontraron médicos con los criterios especificados para el " + fecha + " a las " + hora + ".", Alert.AlertType.INFORMATION);
         }
     }
 
@@ -112,29 +111,62 @@ public class AdminMonitoreoMainController implements SubViewControllerBase {
         String cedulaPaciente = txtCedulaPacienteAsignar.getText();
         String motivoCita = txtMotivoCitaAsignar.getText();
 
-        // Tomar la fecha y hora de los campos de búsqueda de disponibilidad
         LocalDate fechaCita = datePickerFechaDisponibilidad.getValue();
         LocalTime horaCita = null;
         if (txtHoraDisponibilidad.getText() != null && !txtHoraDisponibilidad.getText().trim().isEmpty()) {
             try {
                 horaCita = LocalTime.parse(txtHoraDisponibilidad.getText().trim(), timeFormatter);
             } catch (DateTimeParseException e) {
-                mostrarAlertaLocal("Error Interno", "Hora de Cita no Válida", "La hora ingresada para la búsqueda de disponibilidad no es válida.", Alert.AlertType.ERROR);
+                mostrarAlerta("Error Interno", "Hora de Cita no Válida", "La hora ingresada para la búsqueda de disponibilidad no es válida.", Alert.AlertType.ERROR);
                 return;
             }
         }
 
         if (medicoSeleccionado == null) {
-            mostrarAlertaLocal("Sin Selección", "Médico no seleccionado", "Por favor, seleccione un médico disponible de la tabla.", Alert.AlertType.WARNING);
+            mostrarAlerta("Sin Selección", "Médico no seleccionado", "Por favor, seleccione un médico disponible de la tabla.", Alert.AlertType.WARNING);
             return;
         }
         if (cedulaPaciente == null || cedulaPaciente.trim().isEmpty()) {
-            mostrarAlertaLocal("Campo Vacío", "Cédula de Paciente Requerida", "Por favor, ingrese la cédula del paciente a asignar.", Alert.AlertType.WARNING);
+            mostrarAlerta("Campo Vacío", "Cédula de Paciente Requerida", "Por favor, ingrese la cédula del paciente a asignar.", Alert.AlertType.WARNING);
             return;
         }
         if (motivoCita == null || motivoCita.trim().isEmpty()) {
-            mostrarAlertaLocal("Campo Vacío", "Motivo de Cita Requerido", "Por favor, ingrese el motivo de la cita.", Alert.AlertType.WARNING);
+            mostrarAlerta("Campo Vacío", "Motivo de Cita Requerido", "Por favor, ingrese el motivo de la cita.", Alert.AlertType.WARNING);
             return;
         }
         if (fechaCita == null || horaCita == null) {
-            mostrarAlertaLocal("Datos Faltantes", "Fecha y Hora de Cita Requeridas", "Asegúrese de haber buscado disponibilidad por fecha y hora
+            mostrarAlerta("Datos Faltantes", "Fecha y Hora de Cita Requeridas", "Asegúrese de haber buscado disponibilidad por fecha y hora, ya que estos valores se usarán para la cita.", Alert.AlertType.WARNING);
+            return;
+        }
+
+        CitaMedica citaAsignada = sistemaHospitalario.asignarPacienteAMedicoDisponible(
+                cedulaPaciente.trim(),
+                medicoSeleccionado.getEspecialidad(),
+                fechaCita,
+                horaCita,
+                motivoCita.trim()
+        );
+
+        if (citaAsignada != null) {
+            mostrarAlerta("Éxito", "Cita Asignada", "El paciente ha sido asignado exitosamente al Dr(a). " + medicoSeleccionado.getNombre() + " para el " + fechaCita + " a las " + horaCita + ".\nID Cita: " + citaAsignada.getIdCita(), Alert.AlertType.INFORMATION);
+            txtCedulaPacienteAsignar.clear();
+            txtMotivoCitaAsignar.clear();
+            handleBuscarMedicosDisponibles(null);
+        } else {
+            mostrarAlerta("Error", "Asignación Fallida", "No se pudo asignar el paciente. Verifique que el paciente exista y no haya conflictos de sala o cita para el médico en ese horario.", Alert.AlertType.ERROR);
+        }
+    }
+
+    // Método de alerta privado y autónomo para esta clase
+    private void mostrarAlerta(String titulo, String cabecera, String contenido, Alert.AlertType tipo) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle(titulo);
+        alert.setHeaderText(cabecera);
+        alert.setContentText(contenido);
+        // Hacer la alerta modal a la ventana principal de la aplicación si es posible
+        if (mainApp != null && mainApp.getPrimaryStage() != null) {
+            alert.initOwner(mainApp.getPrimaryStage());
+        }
+        alert.showAndWait();
+    }
+}
