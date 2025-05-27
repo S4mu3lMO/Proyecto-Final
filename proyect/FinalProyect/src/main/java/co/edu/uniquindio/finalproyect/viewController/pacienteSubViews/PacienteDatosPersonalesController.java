@@ -4,7 +4,7 @@ import co.edu.uniquindio.finalproyect.application.App;
 import co.edu.uniquindio.finalproyect.model.Paciente;
 import co.edu.uniquindio.finalproyect.model.Sexo;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
-import co.edu.uniquindio.finalproyect.model.TipoUsuario; // Aunque no se cambia, es parte del constructor de Paciente
+import co.edu.uniquindio.finalproyect.model.TipoUsuario;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -14,7 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage; // Para initOwner en Alerta
+import javafx.stage.Stage;
 
 public class PacienteDatosPersonalesController implements PacienteSubViewControllerBase {
 
@@ -45,7 +45,6 @@ public class PacienteDatosPersonalesController implements PacienteSubViewControl
     public void inicializarDatosSubVistaPaciente() {
         if (pacienteLogueado == null) {
             mostrarAlerta("Error", "Paciente no identificado", "No se pudieron cargar los datos del paciente.", Alert.AlertType.ERROR);
-            // Podrías deshabilitar el formulario o redirigir
             btnActualizarMisDatos.setDisable(true);
             return;
         }
@@ -55,7 +54,6 @@ public class PacienteDatosPersonalesController implements PacienteSubViewControl
 
     @FXML
     public void initialize() {
-        // Poblar ComboBox de Sexo
         cbSexoPaciente.setItems(FXCollections.observableArrayList(Sexo.values()));
     }
 
@@ -67,7 +65,6 @@ public class PacienteDatosPersonalesController implements PacienteSubViewControl
             cbSexoPaciente.setValue(pacienteLogueado.getSexo());
             txtNumSeguroPaciente.setText(pacienteLogueado.getNumeroSeguroSocial());
             txtNombreUsuarioPaciente.setText(pacienteLogueado.getNombreUsuario());
-            // Los campos de contraseña se dejan en blanco intencionalmente
             pwdNuevaContrasena.clear();
             pwdConfirmarContrasena.clear();
         }
@@ -94,38 +91,30 @@ public class PacienteDatosPersonalesController implements PacienteSubViewControl
         }
         Sexo sexo = cbSexoPaciente.getValue();
         String nombreUsuario = txtNombreUsuarioPaciente.getText().trim();
-        String nuevaContrasena = pwdNuevaContrasena.getText(); // No se hace trim a contraseñas
+        String nuevaContrasena = pwdNuevaContrasena.getText();
 
-        // Crear una instancia temporal de Paciente con los datos actualizados
-        // Se usa el constructor de Paciente, manteniendo los datos no editables del pacienteLogueado
         Paciente pacienteActualizado = new Paciente(
                 nombre,
-                pacienteLogueado.getCedula(), // Cédula no cambia
+                pacienteLogueado.getCedula(),
                 sexo,
                 edad,
                 nombreUsuario,
-                nuevaContrasena.isEmpty() ? pacienteLogueado.getContrasena() : nuevaContrasena, // Si la nueva contraseña está vacía, mantener la actual
-                pacienteLogueado.getTipoUsuario(), // Tipo de usuario no cambia
-                pacienteLogueado.getNumeroSeguroSocial(), // No. Seguro Social no cambia
-                pacienteLogueado.getHistorialMedico() // Historial médico no se modifica aquí
+                nuevaContrasena.isEmpty() ? pacienteLogueado.getContrasena() : nuevaContrasena,
+                pacienteLogueado.getTipoUsuario(),
+                pacienteLogueado.getNumeroSeguroSocial(),
+                pacienteLogueado.getHistorialMedico()
         );
 
         boolean exito = sistemaHospitalario.actualizarPaciente(pacienteActualizado);
 
         if (exito) {
-            // Actualizar la instancia de pacienteLogueado en este controlador y potencialmente en App/Singleton si es necesario
             this.pacienteLogueado = pacienteActualizado;
-            // Si la contraseña cambió, el pacienteLogueado ahora tiene la nueva.
-            // Si tienes una instancia global del paciente logueado (ej. en un Singleton), actualízala también.
-            // Ejemplo: SistemaHospitalarioSingleton.getInstance().setUsuarioLogueado(pacienteActualizado);
 
             mostrarAlerta("Éxito", "Datos Actualizados", "Sus datos personales han sido actualizados correctamente.", Alert.AlertType.INFORMATION);
-            // Limpiar campos de contraseña después de actualizar
             pwdNuevaContrasena.clear();
             pwdConfirmarContrasena.clear();
         } else {
             mostrarAlerta("Error", "Actualización Fallida", "No se pudieron actualizar sus datos. Intente más tarde o contacte a soporte.", Alert.AlertType.ERROR);
-            // Recargar los datos originales por si el usuario hizo cambios no guardados
             cargarDatosPaciente();
         }
     }
@@ -162,12 +151,11 @@ public class PacienteDatosPersonalesController implements PacienteSubViewControl
             errores += "El nombre de usuario no puede estar vacío.\n";
         }
 
-        // Validar contraseñas solo si se ingresó una nueva contraseña
         if (!nuevaContrasena.isEmpty() || !confirmarContrasena.isEmpty()) {
             if (!nuevaContrasena.equals(confirmarContrasena)) {
                 errores += "Las contraseñas no coinciden.\n";
             }
-            if (nuevaContrasena.length() < 4 && !nuevaContrasena.isEmpty()) { // Ejemplo de longitud mínima
+            if (nuevaContrasena.length() < 4 && !nuevaContrasena.isEmpty()) {
                 errores += "La nueva contraseña debe tener al menos 4 caracteres.\n";
             }
         }

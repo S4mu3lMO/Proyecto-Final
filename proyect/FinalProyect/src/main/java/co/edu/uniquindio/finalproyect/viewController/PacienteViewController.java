@@ -14,7 +14,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage; // Para initOwner
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,7 +24,6 @@ public class PacienteViewController {
     private SistemaHospitalario sistemaHospitalario;
     private Paciente pacienteLogueado;
 
-    // RUTA BASE CORRECTA para las sub-vistas del paciente
     private final String VIEWS_BASE_PATH = "/co/edu/uniquindio/finalproyect/views/";
 
     @FXML private BorderPane mainPacientePanel;
@@ -69,13 +68,12 @@ public class PacienteViewController {
         }
         System.out.println("Dashboard de Paciente inicializado para: " + pacienteLogueado.getNombre());
         if (btnGestionarMisCitas != null) {
-            handleGestionarMisCitas(new ActionEvent()); // Pasar un ActionEvent
+            handleGestionarMisCitas(new ActionEvent());
         }
     }
 
     @FXML
     void initialize() {
-        // Método llamado por FXMLLoader
     }
 
     @FXML

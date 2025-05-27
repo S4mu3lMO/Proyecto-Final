@@ -7,6 +7,6 @@ import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
 public interface MedicoSubViewControllerBase {
     void setMainApp(App mainApp);
     void setSistemaHospitalario(SistemaHospitalario sistema);
-    void setMedicoLogueado(Medico medico); // Específico para sub-vistas de médico
-    void inicializarDatosSubVista(); // Para cargar datos o configurar la sub-vista
+    void setMedicoLogueado(Medico medico);
+    void inicializarDatosSubVista();
 }

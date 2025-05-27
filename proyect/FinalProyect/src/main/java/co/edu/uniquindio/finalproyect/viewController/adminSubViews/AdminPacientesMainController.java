@@ -26,7 +26,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL; // Importar URL
+import java.net.URL;
 import java.util.Optional;
 
 public class AdminPacientesMainController implements SubViewControllerBase {
@@ -35,7 +35,6 @@ public class AdminPacientesMainController implements SubViewControllerBase {
     private SistemaHospitalario sistemaHospitalario;
     private AdministradorViewController administradorViewController;
 
-    // RUTA BASE CORRECTA Y COMPLETA para los FXML
     private final String VIEWS_BASE_PATH = "/co/edu/uniquindio/finalproyect/views/";
 
     @FXML private TableView<Paciente> tablaPacientes;
@@ -82,7 +81,6 @@ public class AdminPacientesMainController implements SubViewControllerBase {
 
     @FXML
     public void initialize() {
-        // La inicialización principal ocurre en inicializarSubView
     }
 
     private void cargarPacientesEnTabla() {
@@ -157,10 +155,8 @@ public class AdminPacientesMainController implements SubViewControllerBase {
         }
     }
 
-    // Método para mostrar el diálogo del formulario de paciente (Crear/Actualizar)
     private void mostrarDialogoFormularioPaciente(Paciente paciente) {
         try {
-            // RUTA CORREGIDA para PacienteFormView.fxml
             String fxmlFormPath = VIEWS_BASE_PATH + "PacienteFormView.fxml";
             URL resourceUrl = getClass().getResource(fxmlFormPath);
 
@@ -173,7 +169,7 @@ public class AdminPacientesMainController implements SubViewControllerBase {
             }
 
             FXMLLoader loader = new FXMLLoader(resourceUrl);
-            Parent page = loader.load(); // Esta es la línea ~150 que causaba el error
+            Parent page = loader.load();
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle(paciente == null ? "Registrar Nuevo Paciente" : "Actualizar Paciente");

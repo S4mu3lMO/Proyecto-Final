@@ -28,8 +28,6 @@ public class AdminMonitoreoMainController implements SubViewControllerBase {
 
     private App mainApp;
     private SistemaHospitalario sistemaHospitalario;
-    // Ya no necesitamos administradorViewController para las alertas locales
-    // private AdministradorViewController administradorViewController;
 
     @FXML private DatePicker datePickerFechaDisponibilidad;
     @FXML private TextField txtHoraDisponibilidad;
@@ -54,7 +52,6 @@ public class AdminMonitoreoMainController implements SubViewControllerBase {
 
     @Override
     public void setAdministradorViewController(AdministradorViewController adminController) {
-        // this.administradorViewController = adminController; // Ya no es necesario para las alertas
     }
 
     @Override
@@ -72,7 +69,6 @@ public class AdminMonitoreoMainController implements SubViewControllerBase {
 
     @FXML
     public void initialize() {
-        // Lógica de inicialización si es necesaria
     }
 
     @FXML
@@ -155,13 +151,11 @@ public class AdminMonitoreoMainController implements SubViewControllerBase {
         }
     }
 
-    // Método de alerta privado y autónomo para esta clase
     private void mostrarAlerta(String titulo, String cabecera, String contenido, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
         alert.setTitle(titulo);
         alert.setHeaderText(cabecera);
         alert.setContentText(contenido);
-        // Hacer la alerta modal a la ventana principal de la aplicación si es posible
         if (mainApp != null && mainApp.getPrimaryStage() != null) {
             alert.initOwner(mainApp.getPrimaryStage());
         }

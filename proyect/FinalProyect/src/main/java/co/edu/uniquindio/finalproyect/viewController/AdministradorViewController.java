@@ -3,9 +3,7 @@ package co.edu.uniquindio.finalproyect.viewController;
 import co.edu.uniquindio.finalproyect.application.App;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
 import co.edu.uniquindio.finalproyect.model.Usuario;
-// Asegúrate de importar SubViewControllerBase y los controladores específicos de sub-vistas si los casteas directamente
 import co.edu.uniquindio.finalproyect.viewController.adminSubViews.SubViewControllerBase;
-// Ejemplo: import co.edu.uniquindio.finalproyect.viewController.adminSubViews.AdminPacientesMainController;
 
 
 import javafx.event.ActionEvent;
@@ -17,19 +15,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import java.io.IOException;
-import java.net.URL; // Importar URL
+import java.net.URL;
 
 public class AdministradorViewController {
 
     private App mainApp;
     private SistemaHospitalario sistemaHospitalario;
     private Usuario usuarioLogueado;
-
-    // Define la base de la ruta a tus vistas FXML de sub-vistas del admin
-    // Esta ruta DEBE coincidir con la estructura de tu carpeta src/main/resources
     private final String ADMIN_SUBVIEWS_BASE_PATH = "/co/edu/uniquindio/finalproyect/views/";
-    // Si tienes otra subcarpeta para los formularios del admin, define otra constante:
-    // private final String ADMIN_FORMS_BASE_PATH = "/co/edu/uniquindio/finalproyect/views/forms/";
+
 
 
     @FXML
@@ -40,7 +34,7 @@ public class AdministradorViewController {
 
     @FXML private Button btnModuloGestionPacientes;
     @FXML private Button btnModuloGestionMedicos;
-    @FXML private Button btnModuloGestionSalasHorarios; // Cambiado para reflejar que carga AdminSalasMainView
+    @FXML private Button btnModuloGestionSalasHorarios;
     @FXML private Button btnModuloMonitoreoAsignacion;
     @FXML private Button btnModuloReportes;
     @FXML private Button btnCerrarSesion;
@@ -63,14 +57,12 @@ public class AdministradorViewController {
     public void inicializarDatos() {
         System.out.println("Dashboard de Admin inicializado para: " + (usuarioLogueado != null ? usuarioLogueado.getNombre() : "N/A"));
         if (btnModuloGestionPacientes != null) {
-            // Cargar una vista por defecto, por ejemplo, la de pacientes.
             handleModuloGestionPacientes(new ActionEvent());
         }
     }
 
     @FXML
     void initialize() {
-        // El método initialize() es llamado por FXMLLoader después de inyectar los @FXML.
     }
 
     @FXML
@@ -86,7 +78,7 @@ public class AdministradorViewController {
     }
 
     @FXML
-    void handleModuloGestionSalasHorarios(ActionEvent event) { // Renombrado para claridad
+    void handleModuloGestionSalasHorarios(ActionEvent event) {
         System.out.println("Cargando módulo de Gestión de Salas...");
         cargarSubVistaEnCentro(ADMIN_SUBVIEWS_BASE_PATH + "AdminSalasMainView.fxml");
     }

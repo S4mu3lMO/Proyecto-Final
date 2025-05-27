@@ -17,8 +17,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
-import javafx.stage.Stage; // Para initOwner en Alerta
-import javafx.util.Callback; // Para ListCell
+import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.time.format.DateTimeFormatter;
 
@@ -62,11 +62,9 @@ public class PacienteVerHistorialController implements PacienteSubViewController
 
     @FXML
     public void initialize() {
-        // La configuración de ListViews se hace en inicializarDatosSubVistaPaciente -> configurarListViews
     }
 
     private void configurarListViews() {
-        // Formato para Diagnostico en ListView
         listViewMisDiagnosticos.setCellFactory(lv -> new ListCell<Diagnostico>() {
             @Override
             protected void updateItem(Diagnostico item, boolean empty) {
@@ -80,7 +78,6 @@ public class PacienteVerHistorialController implements PacienteSubViewController
             }
         });
 
-        // Formato para Tratamiento en ListView
         listViewMisTratamientos.setCellFactory(lv -> new ListCell<Tratamiento>() {
             @Override
             protected void updateItem(Tratamiento item, boolean empty) {
@@ -95,7 +92,6 @@ public class PacienteVerHistorialController implements PacienteSubViewController
             }
         });
 
-        // Listeners para mostrar detalles
         listViewMisDiagnosticos.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 mostrarDetalleDiagnostico(newVal);
@@ -187,7 +183,7 @@ public class PacienteVerHistorialController implements PacienteSubViewController
     private void mostrarAlerta(String titulo, String cabecera, String contenido, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
         alert.setTitle("Información del Sistema");
-        alert.setHeaderText(cabecera); // Usar el segundo parámetro como cabecera
+        alert.setHeaderText(cabecera);
         alert.setContentText(contenido);
         if (mainApp != null && mainApp.getPrimaryStage() != null) {
             alert.initOwner(mainApp.getPrimaryStage());

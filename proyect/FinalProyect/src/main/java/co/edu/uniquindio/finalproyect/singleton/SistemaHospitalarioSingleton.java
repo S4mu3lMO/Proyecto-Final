@@ -1,6 +1,6 @@
 package co.edu.uniquindio.finalproyect.singleton;
 
-import co.edu.uniquindio.finalproyect.model.*; // Importa todas tus clases del modelo
+import co.edu.uniquindio.finalproyect.model.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -8,20 +8,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.UUID;
 
-/**
- * Clase Singleton para asegurar una única instancia de SistemaHospitalario
- * en toda la aplicación y para inicializarla con datos de prueba.
- */
 public class SistemaHospitalarioSingleton {
 
     private static SistemaHospitalarioSingleton instance;
     private SistemaHospitalario sistemaHospitalario;
 
-    // Opcional: Para almacenar el usuario que ha iniciado sesión globalmente si se necesita.
-    // private Usuario usuarioLogueadoGlobal;
-
     private SistemaHospitalarioSingleton() {
-        // El sistema se inicializa en inicializarSistema() para asegurar que se haga una sola vez.
+
     }
 
     public static SistemaHospitalarioSingleton getInstance() {
@@ -32,7 +25,6 @@ public class SistemaHospitalarioSingleton {
     }
 
     public SistemaHospitalario getSistemaHospitalario() {
-        // Asegurarse de que el sistema esté inicializado antes de devolverlo.
         if (sistemaHospitalario == null) {
             System.out.println("ADVERTENCIA: Se está accediendo a SistemaHospitalario antes de inicializarlo. Se intentará inicializar ahora.");
             inicializarSistema();
@@ -40,159 +32,156 @@ public class SistemaHospitalarioSingleton {
         return sistemaHospitalario;
     }
 
-    /**
-     * Inicializa la instancia de SistemaHospitalario y la puebla con datos quemados.
-     * Este método debe ser llamado una única vez al inicio de la aplicación (ej. en App.start()).
-     */
     public void inicializarSistema() {
-        if (sistemaHospitalario == null) {
-            System.out.println("Inicializando SistemaHospitalarioSingleton...");
-            sistemaHospitalario = new SistemaHospitalario("Hospital UniSalud Central", "900.123.456-7");
-
-            // --- Crear Medicamentos de Ejemplo ---
-            Medicamento ibuprofeno = new Medicamento(UUID.randomUUID().toString().substring(0,8), "Ibuprofeno", "Tableta 400mg", 400, "Genfar", false);
-            Medicamento amoxicilina = new Medicamento(UUID.randomUUID().toString().substring(0,8), "Amoxicilina", "Cápsula 500mg", 500, "MK", true);
-            Medicamento paracetamol = new Medicamento(UUID.randomUUID().toString().substring(0,8), "Paracetamol", "Tableta 500mg", 500, "La Santé", false);
-            Medicamento losartan = new Medicamento(UUID.randomUUID().toString().substring(0,8), "Losartán", "Tableta 50mg", 50, "Coaspharma", true);
-
-            sistemaHospitalario.getListMedicamentos().addAll(Arrays.asList(ibuprofeno, amoxicilina, paracetamol, losartan));
-
-            // --- Crear Salas de Ejemplo ---
-            Sala consultorio101 = new Sala("C-101", TipoSala.CONSULTORIO, 1);
-            Sala consultorio102 = new Sala("C-102", TipoSala.CONSULTORIO, 1);
-            Sala quirofanoA = new Sala("Q-A", TipoSala.QUIROFANO, 5);
-            Sala laboratorioB = new Sala("L-B", TipoSala.LABORATORIO, 3);
-            Sala esperaPrincipal = new Sala("ESP-01", TipoSala.ESPERA, 20);
-
-            sistemaHospitalario.agregarSala(consultorio101);
-            sistemaHospitalario.agregarSala(consultorio102);
-            sistemaHospitalario.agregarSala(quirofanoA);
-            sistemaHospitalario.agregarSala(laboratorioB);
-            sistemaHospitalario.agregarSala(esperaPrincipal);
-
-            // --- Crear Usuarios de Ejemplo ---
-
-            // 1. Administrador
-            Administrativo admin = new Administrativo("Alicia Administradora", "1000000000", Sexo.FEMENINO, 38,
-                    "admin", "admin123", TipoUsuario.ADMINISTRADOR,
-                    "Jefe de Admisiones", RolAdministrativo.SUPER_ADMIN);
-            sistemaHospitalario.registrarAdministrativo(admin);
-
-            // 2. Médicos
-            Medico medico1 = new Medico("Carlos Cárdenas", "2000000001", Sexo.MASCULINO, 45,
-                    "ccardenas", "med123", TipoUsuario.MEDICO,
-                    "Cardiología", "MD-CAR-001", new LinkedList<>());
-            sistemaHospitalario.registrarMedico(medico1);
-            sistemaHospitalario.registrarHorarioDisponibilidad(medico1.getCedula(), DayOfWeek.MONDAY, LocalTime.of(8, 0), LocalTime.of(12, 0));
-            sistemaHospitalario.registrarHorarioDisponibilidad(medico1.getCedula(), DayOfWeek.MONDAY, LocalTime.of(14, 0), LocalTime.of(17, 0));
-            sistemaHospitalario.registrarHorarioDisponibilidad(medico1.getCedula(), DayOfWeek.WEDNESDAY, LocalTime.of(9, 0), LocalTime.of(13, 0));
-
-
-            Medico medico2 = new Medico("Laura López", "2000000002", Sexo.FEMENINO, 39,
-                    "llopez", "med456", TipoUsuario.MEDICO,
-                    "Pediatría", "MD-PED-002", new LinkedList<>());
-            sistemaHospitalario.registrarMedico(medico2);
-            sistemaHospitalario.registrarHorarioDisponibilidad(medico2.getCedula(), DayOfWeek.TUESDAY, LocalTime.of(10, 0), LocalTime.of(16, 0));
-            sistemaHospitalario.registrarHorarioDisponibilidad(medico2.getCedula(), DayOfWeek.THURSDAY, LocalTime.of(8, 30), LocalTime.of(12, 30));
-            sistemaHospitalario.registrarHorarioDisponibilidad(medico2.getCedula(), DayOfWeek.FRIDAY, LocalTime.of(14, 0), LocalTime.of(18, 0));
-
-
-            // 3. Pacientes
-            Paciente paciente1 = new Paciente("Juan Rodríguez", "3000000001", Sexo.MASCULINO, 30,
-                    "jrodriguez", "pac123", TipoUsuario.PACIENTE,
-                    "EPS001-12345", null); // El historial se crea en registrarPaciente si es null
-            sistemaHospitalario.registrarPaciente(paciente1);
-
-            Paciente paciente2 = new Paciente("Ana Vélez", "3000000002", Sexo.FEMENINO, 25,
-                    "avelez", "pac456", TipoUsuario.PACIENTE,
-                    "EPS002-67890", null);
-            sistemaHospitalario.registrarPaciente(paciente2);
-
-            // --- Crear Citas Médicas de Ejemplo ---
-            // Cita para Juan Rodríguez con Dr. Carlos Cárdenas (Cardiología)
-            sistemaHospitalario.solicitarCitaMedica(
-                    paciente1.getCedula(), medico1.getCedula(),
-                    LocalDate.now().plusDays(3).with(DayOfWeek.MONDAY), // Próximo lunes
-                    LocalTime.of(9, 0),
-                    "Chequeo general, dolor en el pecho."
-            );
-
-            // Cita para Ana Vélez con Dra. Laura López (Pediatría) - Asumamos que Ana lleva a un niño
-            sistemaHospitalario.solicitarCitaMedica(
-                    paciente2.getCedula(), medico2.getCedula(),
-                    LocalDate.now().plusDays(5).with(DayOfWeek.TUESDAY), // Próximo martes
-                    LocalTime.of(11, 0),
-                    "Control de crecimiento niño 2 años."
-            );
-
-            // Cita pasada y finalizada para Juan Rodríguez
-            String idCitaPasada = UUID.randomUUID().toString();
-            CitaMedica citaPasada = new CitaMedica(idCitaPasada, paciente1, medico1,
-                    LocalDate.now().minusDays(15), LocalTime.of(10,0),
-                    consultorio101, "Dolor de cabeza persistente", EstadoCita.FINALIZADA);
-            sistemaHospitalario.getListCitasMedicas().add(citaPasada);
-            medico1.agregarListCitasMedicas(citaPasada); // Asegurar que el médico también la tenga
-
-            // --- Añadir Diagnósticos y Tratamientos de Ejemplo al Historial de Juan Rodríguez ---
-            if (paciente1.getHistorialMedico() != null) {
-                // Diagnóstico para la cita pasada
-                sistemaHospitalario.registrarDiagnostico(
-                        medico1.getCedula(), paciente1.getCedula(),
-                        "Migraña tensional debido a estrés. Se recomienda reposo y analgésicos.",
-                        LocalDate.now().minusDays(15) // Fecha del diagnóstico (misma que la cita pasada)
-                );
-
-                // Tratamiento para la migraña
-                LinkedList<Medicamento> medsMigrana = new LinkedList<>();
-                medsMigrana.add(ibuprofeno);
-                medsMigrana.add(paracetamol);
-                sistemaHospitalario.registrarTratamiento(
-                        medico1.getCedula(), paciente1.getCedula(),
-                        LocalDate.now().minusDays(15), // Inicio del tratamiento
-                        LocalDate.now().minusDays(10), // Fin del tratamiento
-                        "Reposo relativo. Tomar Ibuprofeno 400mg cada 8 horas por 3 días si hay dolor. Paracetamol 500mg SOS.",
-                        medsMigrana,
-                        "Ibuprofeno: 1 tableta c/8h por 3 días. Paracetamol: 1 tableta si es necesario, max 4 al día."
-                );
-            }
-
-            // --- Añadir un diagnóstico para Ana Vélez (o su hijo)
-            if (paciente2.getHistorialMedico() != null) {
-                sistemaHospitalario.registrarDiagnostico(
-                        medico2.getCedula(), paciente2.getCedula(),
-                        "Niño con desarrollo normal para su edad. Leve resfriado común.",
-                        LocalDate.now().minusDays(5) // Fecha de un chequeo anterior
-                );
-                LinkedList<Medicamento> medsResfriado = new LinkedList<>();
-                medsResfriado.add(paracetamol); // Dosis pediátrica (esto es solo un ejemplo)
-                sistemaHospitalario.registrarTratamiento(
-                        medico2.getCedula(), paciente2.getCedula(),
-                        LocalDate.now().minusDays(5), LocalDate.now().minusDays(2),
-                        "Hidratación abundante. Paracetamol en gotas según peso si hay fiebre.",
-                        medsResfriado,
-                        "Paracetamol: según peso y edad, cada 6-8 horas SOS."
-                );
-            }
-
-
-            System.out.println("Sistema Hospitalario inicializado y poblado con datos de prueba.");
-        } else {
-            System.out.println("Sistema Hospitalario ya había sido inicializado.");
+        if (sistemaHospitalario != null) {
+            System.out.println("INFO: Sistema Hospitalario ya había sido inicializado.");
+            return;
         }
+
+        System.out.println("Inicializando SistemaHospitalarioSingleton con datos de prueba ampliados...");
+        sistemaHospitalario = new SistemaHospitalario("UQ", "900.555.123-0");
+
+
+        Medicamento ibuprofeno = new Medicamento(UUID.randomUUID().toString().substring(0,8), "Ibuprofeno", "Tableta 600mg", 600, "Genfar", false);
+        Medicamento amoxicilina = new Medicamento(UUID.randomUUID().toString().substring(0,8), "Amoxicilina Forte", "Suspensión 250mg/5ml", 250, "MK", true);
+        Medicamento paracetamol = new Medicamento(UUID.randomUUID().toString().substring(0,8), "Paracetamol", "Gotas 100mg/ml", 100, "La Santé", false);
+        Medicamento losartan = new Medicamento(UUID.randomUUID().toString().substring(0,8), "Losartán Potásico", "Tableta 100mg", 100, "Coaspharma", true);
+        Medicamento omeprazol = new Medicamento(UUID.randomUUID().toString().substring(0,8), "Omeprazol", "Cápsula 20mg", 20, "Procaps", true);
+        Medicamento loratadina = new Medicamento(UUID.randomUUID().toString().substring(0,8), "Loratadina", "Jarabe 5mg/5ml", 5, "Bayer", false);
+        Medicamento metformina = new Medicamento(UUID.randomUUID().toString().substring(0,8), "Metformina", "Tableta 850mg", 850, "Sanofi", true);
+        Medicamento salbutamol = new Medicamento(UUID.randomUUID().toString().substring(0,8), "Salbutamol Inhalador", "Inhalador 100mcg/dosis", 100, "GSK", true);
+
+        sistemaHospitalario.getListMedicamentos().addAll(Arrays.asList(ibuprofeno, amoxicilina, paracetamol, losartan, omeprazol, loratadina, metformina, salbutamol));
+
+
+        Sala consultorio101 = new Sala("C-101", TipoSala.CONSULTORIO, 1);
+        Sala consultorio102 = new Sala("C-102", TipoSala.CONSULTORIO, 1);
+        Sala consultorio201 = new Sala("C-201", TipoSala.CONSULTORIO, 1);
+        Sala consultorio202 = new Sala("C-202", TipoSala.CONSULTORIO, 1);
+        Sala consultorio301 = new Sala("C-301", TipoSala.CONSULTORIO, 1);
+        Sala quirofanoA = new Sala("Q-A", TipoSala.QUIROFANO, 5);
+        Sala quirofanoB = new Sala("Q-B", TipoSala.QUIROFANO, 4);
+        Sala laboratorioB = new Sala("L-B", TipoSala.LABORATORIO, 3);
+        Sala laboratorioC = new Sala("L-C", TipoSala.LABORATORIO, 5);
+        Sala esperaPrincipal = new Sala("ESP-01", TipoSala.ESPERA, 20);
+        Sala esperaUrgencias = new Sala("ESP-Urg", TipoSala.ESPERA, 15);
+
+
+        sistemaHospitalario.agregarSala(consultorio101);
+        sistemaHospitalario.agregarSala(consultorio102);
+        sistemaHospitalario.agregarSala(consultorio201);
+        sistemaHospitalario.agregarSala(consultorio202);
+        sistemaHospitalario.agregarSala(consultorio301);
+        sistemaHospitalario.agregarSala(quirofanoA);
+        sistemaHospitalario.agregarSala(quirofanoB);
+        sistemaHospitalario.agregarSala(laboratorioB);
+        sistemaHospitalario.agregarSala(laboratorioC);
+        sistemaHospitalario.agregarSala(esperaPrincipal);
+        sistemaHospitalario.agregarSala(esperaUrgencias);
+
+
+
+
+        // Administradores (5)
+        Administrativo admin1 = new Administrativo("Alicia Administradora", "1000000000", Sexo.FEMENINO, 38, "admin", "admin123", TipoUsuario.ADMINISTRADOR, "Jefe de Admisiones", RolAdministrativo.SUPER_ADMIN);
+        Administrativo admin2 = new Administrativo("Bernardo Botero", "1000000001", Sexo.MASCULINO, 45, "bbo", "ber456", TipoUsuario.ADMINISTRADOR, "Gestor de Personal Médico", RolAdministrativo.GESTOR_PERSONAL);
+        Administrativo admin3 = new Administrativo("Carolina Cruz", "1000000002", Sexo.FEMENINO, 32, "ccr", "car789", TipoUsuario.ADMINISTRADOR, "Coordinadora de Salas", RolAdministrativo.GESTOR_INFRASTRUCTURA);
+        Administrativo admin4 = new Administrativo("David Duarte", "1000000003", Sexo.MASCULINO, 50, "ddu", "dav101", TipoUsuario.ADMINISTRADOR, "Analista de Reportes", RolAdministrativo.GESTOR_PERSONAL);
+        Administrativo admin5 = new Administrativo("Elena Estrada", "1000000004", Sexo.FEMENINO, 29, "ees", "ele202", TipoUsuario.ADMINISTRADOR, "Soporte TI", RolAdministrativo.RECURSOS_HUMANOS);
+        sistemaHospitalario.registrarAdministrativo(admin1);
+        sistemaHospitalario.registrarAdministrativo(admin2);
+        sistemaHospitalario.registrarAdministrativo(admin3);
+        sistemaHospitalario.registrarAdministrativo(admin4);
+        sistemaHospitalario.registrarAdministrativo(admin5);
+
+        // Médicos (5)
+        Medico medicoCardiologo = new Medico("Carlos Cárdenas", "2000000001", Sexo.MASCULINO, 45, "ccardenas", "med123", TipoUsuario.MEDICO, "Cardiología", "MD-CAR-001", new LinkedList<>());
+        sistemaHospitalario.registrarMedico(medicoCardiologo);
+        sistemaHospitalario.registrarHorarioDisponibilidad(medicoCardiologo.getCedula(), DayOfWeek.MONDAY, LocalTime.of(8, 0), LocalTime.of(12, 30));
+        sistemaHospitalario.registrarHorarioDisponibilidad(medicoCardiologo.getCedula(), DayOfWeek.WEDNESDAY, LocalTime.of(14, 0), LocalTime.of(18, 0));
+
+        Medico medicoPediatra = new Medico("Laura López", "2000000002", Sexo.FEMENINO, 39, "llopez", "med456", TipoUsuario.MEDICO, "Pediatría", "MD-PED-002", new LinkedList<>());
+        sistemaHospitalario.registrarMedico(medicoPediatra);
+        sistemaHospitalario.registrarHorarioDisponibilidad(medicoPediatra.getCedula(), DayOfWeek.TUESDAY, LocalTime.of(9, 0), LocalTime.of(17, 0));
+        sistemaHospitalario.registrarHorarioDisponibilidad(medicoPediatra.getCedula(), DayOfWeek.THURSDAY, LocalTime.of(8, 0), LocalTime.of(13, 0));
+
+        Medico medicoGeneral = new Medico("Mario Moreno", "2000000003", Sexo.MASCULINO, 52, "mmoreno", "med789", TipoUsuario.MEDICO, "Medicina General", "MD-GEN-003", new LinkedList<>());
+        sistemaHospitalario.registrarMedico(medicoGeneral);
+        sistemaHospitalario.registrarHorarioDisponibilidad(medicoGeneral.getCedula(), DayOfWeek.FRIDAY, LocalTime.of(7,0), LocalTime.of(15,0));
+        sistemaHospitalario.registrarHorarioDisponibilidad(medicoGeneral.getCedula(), DayOfWeek.SATURDAY, LocalTime.of(8,0), LocalTime.of(12,0)); // Horario de Sábado
+
+        Medico medicoDermatologa = new Medico("Diana Durán", "2000000004", Sexo.FEMENINO, 42, "dduran", "derm12", TipoUsuario.MEDICO, "Dermatología", "MD-DER-004", new LinkedList<>());
+        sistemaHospitalario.registrarMedico(medicoDermatologa);
+        sistemaHospitalario.registrarHorarioDisponibilidad(medicoDermatologa.getCedula(), DayOfWeek.MONDAY, LocalTime.of(10,0), LocalTime.of(18,0));
+        sistemaHospitalario.registrarHorarioDisponibilidad(medicoDermatologa.getCedula(), DayOfWeek.THURSDAY, LocalTime.of(14,0), LocalTime.of(19,0)); // Horario tarde
+
+        Medico medicoOrtopedista = new Medico("Oscar Osorio", "2000000005", Sexo.MASCULINO, 48, "oosorio", "orto34", TipoUsuario.MEDICO, "Ortopedia", "MD-ORT-005", new LinkedList<>());
+        sistemaHospitalario.registrarMedico(medicoOrtopedista);
+        sistemaHospitalario.registrarHorarioDisponibilidad(medicoOrtopedista.getCedula(), DayOfWeek.TUESDAY, LocalTime.of(7,30), LocalTime.of(12,30));
+        sistemaHospitalario.registrarHorarioDisponibilidad(medicoOrtopedista.getCedula(), DayOfWeek.WEDNESDAY, LocalTime.of(8,0), LocalTime.of(16,0));
+
+
+        // Pacientes (5)
+        Paciente pacienteJuan = new Paciente("Juan Rodríguez", "3000000001", Sexo.MASCULINO, 30, "jrodriguez", "pac123", TipoUsuario.PACIENTE, "EPS001-JR", null);
+        sistemaHospitalario.registrarPaciente(pacienteJuan);
+
+        Paciente pacienteAna = new Paciente("Ana Vélez", "3000000002", Sexo.FEMENINO, 25, "avelez", "pac456", TipoUsuario.PACIENTE, "EPS002-AV", null);
+        sistemaHospitalario.registrarPaciente(pacienteAna);
+
+        Paciente pacienteLuis = new Paciente("Luis Arias", "3000000003", Sexo.MASCULINO, 42, "larias", "pac789", TipoUsuario.PACIENTE, "EPS003-LA", null);
+        sistemaHospitalario.registrarPaciente(pacienteLuis);
+
+        Paciente pacienteSofia = new Paciente("Sofía Soto", "3000000004", Sexo.FEMENINO, 22, "ssoto", "sofi12", TipoUsuario.PACIENTE, "EPS004-SS", null);
+        sistemaHospitalario.registrarPaciente(pacienteSofia);
+
+        Paciente pacientePedro = new Paciente("Pedro Páez", "3000000005", Sexo.MASCULINO, 55, "ppaez", "pedro34", TipoUsuario.PACIENTE, "EPS005-PP", null);
+        sistemaHospitalario.registrarPaciente(pacientePedro);
+
+
+        sistemaHospitalario.solicitarCitaMedica(pacienteJuan.getCedula(), medicoCardiologo.getCedula(), LocalDate.now().plusDays(7), LocalTime.of(9, 30), "Revisión Cardiológica Anual");
+        sistemaHospitalario.solicitarCitaMedica(pacienteAna.getCedula(), medicoPediatra.getCedula(), LocalDate.now().plusDays(3), LocalTime.of(14, 0), "Vacunación y control pediátrico");
+        sistemaHospitalario.solicitarCitaMedica(pacienteLuis.getCedula(), medicoGeneral.getCedula(), LocalDate.now().plusDays(5), LocalTime.of(10, 0), "Consulta por resfriado fuerte");
+        sistemaHospitalario.solicitarCitaMedica(pacienteSofia.getCedula(), medicoDermatologa.getCedula(), LocalDate.now().plusDays(10), LocalTime.of(15,0), "Revisión de lunares");
+        sistemaHospitalario.solicitarCitaMedica(pacientePedro.getCedula(), medicoOrtopedista.getCedula(), LocalDate.now().plusDays(12), LocalTime.of(8,30), "Dolor de rodilla persistente");
+
+
+        CitaMedica citaCancelada = new CitaMedica(UUID.randomUUID().toString().substring(0,10), pacienteJuan, medicoGeneral, LocalDate.now().plusDays(2), LocalTime.of(11,0), consultorio201, "Consulta general", EstadoCita.PENDIENTE);
+        sistemaHospitalario.getListCitasMedicas().add(citaCancelada);
+        if(medicoGeneral.getListCitasMedicas()!=null) medicoGeneral.getListCitasMedicas().add(citaCancelada);
+        sistemaHospitalario.cancelarCitaMedica(citaCancelada.getIdCita());
+
+
+        CitaMedica citaPasadaJuan = new CitaMedica(UUID.randomUUID().toString().substring(0,10), pacienteJuan, medicoCardiologo, LocalDate.now().minusDays(30), LocalTime.of(10,0), consultorio101, "Dolor de cabeza y mareos", EstadoCita.FINALIZADA);
+        sistemaHospitalario.getListCitasMedicas().add(citaPasadaJuan);
+        if(medicoCardiologo.getListCitasMedicas() != null) medicoCardiologo.getListCitasMedicas().add(citaPasadaJuan);
+
+
+        CitaMedica citaPasadaAna = new CitaMedica(UUID.randomUUID().toString().substring(0,10), pacienteAna, medicoPediatra, LocalDate.now().minusDays(45), LocalTime.of(11,30), consultorio102, "Fiebre alta niño", EstadoCita.FINALIZADA);
+        sistemaHospitalario.getListCitasMedicas().add(citaPasadaAna);
+        if(medicoPediatra.getListCitasMedicas() != null) medicoPediatra.getListCitasMedicas().add(citaPasadaAna);
+
+
+
+        if (pacienteJuan.getHistorialMedico() != null) {
+            sistemaHospitalario.registrarDiagnostico(medicoCardiologo.getCedula(), pacienteJuan.getCedula(), "Episodios de vértigo postural benigno. Hipertensión arterial Etapa 1.", LocalDate.now().minusDays(30));
+            LinkedList<Medicamento> medsJuan = new LinkedList<>(Arrays.asList(losartan, paracetamol));
+            sistemaHospitalario.registrarTratamiento(medicoCardiologo.getCedula(), pacienteJuan.getCedula(), LocalDate.now().minusDays(30), LocalDate.now().plusMonths(3), "Control de presión arterial con Losartán. Ejercicios de reposicionamiento para vértigo. Paracetamol SOS para dolor.", medsJuan, "Losartán 50mg OD. Paracetamol 500mg c/8h PRN dolor.");
+        }
+
+        if (pacienteAna.getHistorialMedico() != null) {
+            sistemaHospitalario.registrarDiagnostico(medicoPediatra.getCedula(), pacienteAna.getCedula(), "Otitis media aguda en oído derecho. Se descarta complicación.", LocalDate.now().minusDays(45));
+            LinkedList<Medicamento> medsAna = new LinkedList<>(Arrays.asList(amoxicilina, ibuprofeno));
+            sistemaHospitalario.registrarTratamiento(medicoPediatra.getCedula(), pacienteAna.getCedula(), LocalDate.now().minusDays(45), LocalDate.now().minusDays(45).plusDays(7), "Tratamiento antibiótico y analgésico.", medsAna, "Amoxicilina 250mg/5ml - 5ml cada 8 horas por 7 días. Ibuprofeno suspensión según peso para fiebre/dolor.");
+        }
+
+        if (pacienteLuis.getHistorialMedico() != null) {
+            sistemaHospitalario.registrarDiagnostico(medicoGeneral.getCedula(), pacienteLuis.getCedula(), "Gripe común con congestión nasal severa.", LocalDate.now().minusDays(2));
+            LinkedList<Medicamento> medsLuis = new LinkedList<>(Arrays.asList(paracetamol, loratadina));
+            sistemaHospitalario.registrarTratamiento(medicoGeneral.getCedula(), pacienteLuis.getCedula(), LocalDate.now().minusDays(2), LocalDate.now().plusDays(3), "Reposo, hidratación, sintomáticos.", medsLuis, "Paracetamol 500mg c/6h. Loratadina 10mg OD.");
+        }
+
+        System.out.println("Sistema Hospitalario inicializado y poblado con datos de prueba ampliados.");
     }
 
-    // Opcional: Métodos para manejar el usuario logueado globalmente
-    /*
-    public Usuario getUsuarioLogueadoGlobal() {
-        return usuarioLogueadoGlobal;
-    }
 
-    public void setUsuarioLogueadoGlobal(Usuario usuarioLogueadoGlobal) {
-        this.usuarioLogueadoGlobal = usuarioLogueadoGlobal;
-    }
-
-    public void cerrarSesionGlobal() {
-        this.usuarioLogueadoGlobal = null;
-    }
-    */
 }

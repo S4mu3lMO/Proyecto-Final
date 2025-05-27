@@ -1,8 +1,8 @@
-package co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms; // O el paquete que uses
+package co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms;
 
 import co.edu.uniquindio.finalproyect.model.Sala;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
-import co.edu.uniquindio.finalproyect.model.TipoSala; //
+import co.edu.uniquindio.finalproyect.model.TipoSala;
 import co.edu.uniquindio.finalproyect.viewController.adminSubViews.AdminSalasMainController;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -23,12 +23,12 @@ public class SalaFormController {
     @FXML private TextField txtCapacidadSala;
     @FXML private CheckBox checkEstaDisponible;
     @FXML private Button btnGuardarSala;
-    @FXML private Button btnCancelarSala; // Asegúrate que este fx:id exista en SalaFormView.fxml
+    @FXML private Button btnCancelarSala;
 
     private Stage dialogStage;
     private SistemaHospitalario sistemaHospitalario;
-    private Sala salaOriginal; // Para saber si estamos editando o creando
-    private AdminSalasMainController adminSalasMainController; // Para refrescar la tabla
+    private Sala salaOriginal;
+    private AdminSalasMainController adminSalasMainController;
     private boolean esNueva = true;
 
     @FXML
@@ -45,7 +45,6 @@ public class SalaFormController {
         if (sala != null) {
             esNueva = false;
             lblTituloFormSala.setText("Actualizar Sala");
-            // El ID de la sala no se edita directamente aquí, se usa para identificarla.
             txtNumeroSala.setText(sala.getNumeroSala());
             cbTipoSala.setValue(sala.getTipoSala());
             txtCapacidadSala.setText(String.valueOf(sala.getCapacidad()));
@@ -53,11 +52,10 @@ public class SalaFormController {
         } else {
             esNueva = true;
             lblTituloFormSala.setText("Registrar Nueva Sala");
-            // Valores por defecto para una nueva sala
             txtNumeroSala.clear();
             cbTipoSala.getSelectionModel().clearSelection();
             txtCapacidadSala.clear();
-            checkEstaDisponible.setSelected(true); // Por defecto, una nueva sala está disponible
+            checkEstaDisponible.setSelected(true);
         }
     }
 
@@ -66,24 +64,22 @@ public class SalaFormController {
         if (validarCamposSala()) {
             String numeroSala = txtNumeroSala.getText().trim();
             TipoSala tipoSala = cbTipoSala.getValue();
-            int capacidad = Integer.parseInt(txtCapacidadSala.getText().trim()); // Ya validado
+            int capacidad = Integer.parseInt(txtCapacidadSala.getText().trim());
             boolean disponible = checkEstaDisponible.isSelected();
 
             Sala salaEditada;
             if (esNueva) {
-                // El ID se genera automáticamente en el constructor de Sala que solo toma numero, tipo y capacidad.
                 salaEditada = new Sala(numeroSala, tipoSala, capacidad);
                 salaEditada.setEstaDisponible(disponible);
             } else {
-                // Para actualizar, se utiliza el constructor que incluye el ID original para identificar la sala a modificar.
-                salaEditada = new Sala(salaOriginal.getIdSala(), numeroSala, tipoSala, capacidad, disponible); //
+                salaEditada = new Sala(salaOriginal.getIdSala(), numeroSala, tipoSala, capacidad, disponible);
             }
 
             boolean resultado;
             if (esNueva) {
-                resultado = sistemaHospitalario.agregarSala(salaEditada); //
+                resultado = sistemaHospitalario.agregarSala(salaEditada);
             } else {
-                resultado = sistemaHospitalario.actualizarSala(salaEditada); //
+                resultado = sistemaHospitalario.actualizarSala(salaEditada);
             }
 
             if (resultado) {
@@ -93,14 +89,13 @@ public class SalaFormController {
                 }
                 dialogStage.close();
             } else {
-                // Los métodos agregarSala/actualizarSala en SistemaHospitalario ya imprimen mensajes si hay errores (ej. ID o número duplicado).
                 mostrarAlerta("Error", "Operación Fallida", "No se pudo " + (esNueva ? "registrar" : "actualizar") + " la sala. Verifique si el número de sala ya existe o si el ID es incorrecto para la actualización.", Alert.AlertType.ERROR);
             }
         }
     }
 
     @FXML
-    void handleCancelarSala(ActionEvent event) { // Conectado al botón Cancelar del FXML
+    void handleCancelarSala(ActionEvent event) {
         if (dialogStage != null) {
             dialogStage.close();
         }
@@ -140,7 +135,7 @@ public class SalaFormController {
         alert.setTitle(titulo);
         alert.setHeaderText(cabecera);
         alert.setContentText(contenido);
-        alert.initOwner(dialogStage); // Para que la alerta sea modal respecto al formulario
+        alert.initOwner(dialogStage);
         alert.showAndWait();
     }
 }

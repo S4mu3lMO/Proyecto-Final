@@ -48,12 +48,10 @@ public class AdminReportesMainController implements SubViewControllerBase {
 
     @Override
     public void inicializarSubView() {
-        // Poblar ComboBox de EstadoCita
         ObservableList<EstadoCita> estados = FXCollections.observableArrayList(EstadoCita.values());
         cbEstadoCitaReporte.setItems(estados);
         cbEstadoCitaReporte.setPromptText("Todos (Opcional)");
 
-        // Establecer valores por defecto
         datePickerReporteCitasInicio.setValue(LocalDate.now().minusMonths(1));
         datePickerReporteCitasFin.setValue(LocalDate.now());
         datePickerReporteOcupacion.setValue(LocalDate.now());
@@ -63,9 +61,6 @@ public class AdminReportesMainController implements SubViewControllerBase {
 
     @FXML
     public void initialize() {
-        // Lógica de inicialización que no depende de mainApp, etc.
-        // Por ejemplo, si cbEstadoCitaReporte no se poblara en inicializarSubView por alguna razón,
-        // podría hacerse aquí, pero es mejor en inicializarSubView si depende de datos que se setean antes.
     }
 
     @FXML
@@ -148,10 +143,6 @@ public class AdminReportesMainController implements SubViewControllerBase {
         } else if (administradorViewController != null && administradorViewController.getMainApp() != null && administradorViewController.getMainApp().getPrimaryStage() != null) {
             ownerStage = administradorViewController.getMainApp().getPrimaryStage();
         }
-        // Si este controlador maneja su propio Stage (por ejemplo, si fuera un diálogo), usarías eso:
-        // else if (this.dialogStage != null) { // Asumiendo que tuvieras una variable dialogStage
-        //     ownerStage = this.dialogStage;
-        // }
 
         if (ownerStage != null) {
             alert.initOwner(ownerStage);

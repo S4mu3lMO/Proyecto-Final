@@ -1,4 +1,4 @@
-package co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms; // O el paquete que uses
+package co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms;
 
 import co.edu.uniquindio.finalproyect.model.HorarioDisponibilidad;
 import co.edu.uniquindio.finalproyect.model.Medico;
@@ -45,13 +45,13 @@ public class MedicoHorariosFormController {
     private SistemaHospitalario sistemaHospitalario;
     private Medico medicoSeleccionado;
     private ObservableList<HorarioDisponibilidad> listaObservableHorarios;
-    private HorarioDisponibilidad horarioParaActualizar = null; // Para saber si estamos editando un horario existente
+    private HorarioDisponibilidad horarioParaActualizar = null;
 
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
     @FXML
     public void initialize() {
-        // Poblar ComboBox de días si no se hizo en FXML
+
         if(cbDiaSemanaFormHorario.getItems().isEmpty()){
             cbDiaSemanaFormHorario.setItems(FXCollections.observableArrayList(DayOfWeek.values()));
         }
@@ -60,11 +60,9 @@ public class MedicoHorariosFormController {
         colHoraInicioHorario.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
         colHoraFinHorario.setCellValueFactory(new PropertyValueFactory<>("horaFin"));
 
-        // Formatear la visualización de LocalTime en la tabla
         colHoraInicioHorario.setCellFactory(column -> formatTimeCell());
         colHoraFinHorario.setCellFactory(column -> formatTimeCell());
 
-        // Listener para cargar datos en el formulario al seleccionar un horario de la tabla
         tablaHorariosMedico.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 horarioParaActualizar = newSelection;
@@ -99,7 +97,6 @@ public class MedicoHorariosFormController {
         this.medicoSeleccionado = medico;
         if (medico != null) {
             lblNombreMedicoHorarios.setText("Médico: Dr(a). " + medico.getNombre());
-            // inicializarVistaHorarios(); // Llamado desde el controlador que abre este diálogo
         }
     }
 
@@ -108,7 +105,6 @@ public class MedicoHorariosFormController {
             mostrarAlerta("Error", "Médico no especificado", "No se puede cargar horarios sin un médico seleccionado.", Alert.AlertType.ERROR);
             return;
         }
-        // El método consultarHorariosDisponibilidad ya devuelve la lista del médico.
         listaObservableHorarios = FXCollections.observableArrayList(sistemaHospitalario.consultarHorariosDisponibilidad(medicoSeleccionado.getCedula()));
         tablaHorariosMedico.setItems(listaObservableHorarios);
         tablaHorariosMedico.refresh();
@@ -144,22 +140,22 @@ public class MedicoHorariosFormController {
         }
 
         boolean resultado;
-        if (horarioParaActualizar != null) { // Actualizando un horario existente
+        if (horarioParaActualizar != null) {
             resultado = sistemaHospitalario.actualizarHorarioDisponibilidad(
                     medicoSeleccionado.getCedula(),
-                    horarioParaActualizar.getIdHorario(), // Se necesita el ID del horario original
+                    horarioParaActualizar.getIdHorario(),
                     dia, horaInicio, horaFin
-            ); //
-        } else { // Agregando un nuevo horario
+            );
+        } else {
             resultado = sistemaHospitalario.registrarHorarioDisponibilidad(
                     medicoSeleccionado.getCedula(),
                     dia, horaInicio, horaFin
-            ); //
+            );
         }
 
         if (resultado) {
             mostrarAlerta("Éxito", "Operación Exitosa", "El horario ha sido " + (horarioParaActualizar != null ? "actualizado." : "registrado."), Alert.AlertType.INFORMATION);
-            inicializarVistaHorarios(); // Recarga la tabla y limpia el formulario
+            inicializarVistaHorarios();
         } else {
             mostrarAlerta("Error", "Fallo en Operación", "No se pudo guardar/actualizar el horario. Verifique la consola o si ya existe un horario para ese ID (si aplica).", Alert.AlertType.ERROR);
         }
@@ -181,10 +177,10 @@ public class MedicoHorariosFormController {
         Optional<ButtonType> result = confirmacion.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            boolean eliminado = sistemaHospitalario.eliminarHorarioDisponibilidad(medicoSeleccionado.getCedula(), seleccionado.getIdHorario()); //
+            boolean eliminado = sistemaHospitalario.eliminarHorarioDisponibilidad(medicoSeleccionado.getCedula(), seleccionado.getIdHorario());
             if (eliminado) {
                 mostrarAlerta("Éxito", "Horario Eliminado", "El horario ha sido eliminado.", Alert.AlertType.INFORMATION);
-                inicializarVistaHorarios(); // Recarga la tabla y limpia el formulario
+                inicializarVistaHorarios();
             } else {
                 mostrarAlerta("Error", "Fallo al Eliminar", "No se pudo eliminar el horario. Verifique la consola.", Alert.AlertType.ERROR);
             }
@@ -204,7 +200,7 @@ public class MedicoHorariosFormController {
     }
 
     private void limpiarCamposDelFormulario() {
-        tablaHorariosMedico.getSelectionModel().clearSelection(); // Esto también dispara el listener y limpia
+        tablaHorariosMedico.getSelectionModel().clearSelection();
         cbDiaSemanaFormHorario.setValue(null);
         txtHoraInicioFormHorario.clear();
         txtHoraFinFormHorario.clear();
@@ -217,7 +213,7 @@ public class MedicoHorariosFormController {
         alert.setTitle(titulo);
         alert.setHeaderText(cabecera);
         alert.setContentText(contenido);
-        alert.initOwner(dialogStage); // Para que la alerta sea modal respecto al diálogo actual
+        alert.initOwner(dialogStage);
         alert.showAndWait();
     }
 }

@@ -29,10 +29,10 @@ import java.util.stream.Collectors;
 public class PacienteSolicitarCitaFormController {
 
     private Stage dialogStage;
-    private App mainApp; // Para initOwner de alertas
+    private App mainApp;
     private SistemaHospitalario sistemaHospitalario;
     private Paciente pacienteLogueado;
-    private PacienteGestionCitasController pacienteGestionCitasController; // Para refrescar la tabla de citas
+    private PacienteGestionCitasController pacienteGestionCitasController;
 
     @FXML private ComboBox<String> cbEspecialidadCita;
     @FXML private DatePicker datePickerFechaCita;
@@ -56,7 +56,6 @@ public class PacienteSolicitarCitaFormController {
 
     @FXML
     public void initialize() {
-        // Formato para mostrar médicos en el ListView
         listViewMedicosDisponibles.setCellFactory(param -> new ListCell<Medico>() {
             @Override
             protected void updateItem(Medico item, boolean empty) {
@@ -71,7 +70,6 @@ public class PacienteSolicitarCitaFormController {
     }
 
     public void inicializarFormulario() {
-        // Poblar ComboBox de especialidades
         if (sistemaHospitalario != null) {
             ObservableList<String> especialidades = FXCollections.observableArrayList(
                     sistemaHospitalario.getListMedicos().stream()
@@ -82,7 +80,7 @@ public class PacienteSolicitarCitaFormController {
             );
             cbEspecialidadCita.setItems(especialidades);
         }
-        datePickerFechaCita.setValue(LocalDate.now().plusDays(1)); // Por defecto, mañana
+        datePickerFechaCita.setValue(LocalDate.now().plusDays(1));
         medicosDisponiblesObsList = FXCollections.observableArrayList();
         listViewMedicosDisponibles.setItems(medicosDisponiblesObsList);
     }
@@ -152,7 +150,6 @@ public class PacienteSolicitarCitaFormController {
             }
             dialogStage.close();
         } else {
-            // El método solicitarCitaMedica ya imprime errores en consola si falla (ej. sala no disponible, médico ya ocupado)
             mostrarAlerta("Error en Solicitud", "No se pudo registrar su cita. Es posible que el horario ya no esté disponible o no haya salas. Intente con otro horario o médico.", Alert.AlertType.ERROR);
         }
     }
@@ -169,7 +166,7 @@ public class PacienteSolicitarCitaFormController {
         alert.setTitle("Solicitud de Cita");
         alert.setHeaderText(titulo);
         alert.setContentText(contenido);
-        if (dialogStage != null) { // Hacerla modal al diálogo actual
+        if (dialogStage != null) {
             alert.initOwner(dialogStage);
         } else if (mainApp != null && mainApp.getPrimaryStage() != null) {
             alert.initOwner(mainApp.getPrimaryStage());

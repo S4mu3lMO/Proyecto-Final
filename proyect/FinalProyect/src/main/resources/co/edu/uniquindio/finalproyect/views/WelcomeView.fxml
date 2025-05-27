@@ -5,28 +5,47 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.paint.Color?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" spacing="20.0" style="-fx-background-color: #E3F2FD;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.finalproyect.viewController.WelcomeViewController">
+<VBox fx:id="welcomeRoot" alignment="CENTER" prefHeight="400.0" prefWidth="600.0" spacing="30.0"
+      style="-fx-background-color: #E3F2FD;"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="co.edu.uniquindio.finalproyect.viewController.WelcomeViewController">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
     </padding>
     <children>
-        <Label text="Bienvenido al Sistema de Gestión Hospitalaria">
-            <font>
-                <Font name="System Bold" size="22.0" />
-            </font>
+        <Label text="Bienvenido al Sistema de Gestión Hospitalaria" textFill="#4A0E4E"> <font>
+            <Font name="Roboto Medium" size="24.0" /> </font>
+            <effect>
+                <DropShadow blurType="GAUSSIAN" height="5.0" radius="2.0" width="5.0">
+                    <color>
+                        <Color opacity="0.15" />
+                    </color>
+                </DropShadow>
+            </effect>
         </Label>
-        <Label fx:id="lblNombreHospital" text="[Nombre del Hospital]">
-            <font>
-                <Font size="18.0" />
-            </font>
+        <Label fx:id="lblNombreHospital" text="Hospital UQ" textFill="#7D1D5F"> <font>
+            <Font name="Roboto Regular" size="20.0" />
+        </font>
+            <VBox.margin>
+                <Insets top="-10.0" bottom="10.0"/>
+            </VBox.margin>
         </Label>
-        <Button fx:id="btnContinuarLogin" mnemonicParsing="false" onAction="#handleContinuarLogin" style="-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-size: 14px;" text="Ingresar al Sistema">
-            <padding>
-                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-            </padding>
+        <Button fx:id="btnContinuarLogin" mnemonicParsing="false" onAction="#handleContinuarLogin"
+                text="Ingresar al Sistema"
+                style="-fx-background-color: #C81D4E; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 25; -fx-border-radius: 25; -fx-padding: 12px 25px;">
+            <font>
+                <Font name="Roboto Bold" size="16.0" />
+            </font>
+            <effect>
+                <DropShadow blurType="GAUSSIAN" height="15.0" radius="7.0" width="15.0">
+                    <color>
+                        <Color opacity="0.3" />
+                    </color>
+                </DropShadow>
+            </effect>
         </Button>
     </children>
 </VBox>

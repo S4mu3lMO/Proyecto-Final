@@ -1,7 +1,7 @@
 package co.edu.uniquindio.finalproyect.viewController.medicoSubViews;
 
 import co.edu.uniquindio.finalproyect.application.App;
-import co.edu.uniquindio.finalproyect.model.*; // Paciente, HistorialMedico, Diagnostico, Tratamiento
+import co.edu.uniquindio.finalproyect.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -39,7 +39,6 @@ public class MedicoVerHistorialController implements MedicoSubViewControllerBase
     }
 
     private void configurarListViews() {
-        // Formatear cómo se muestra un Diagnostico en el ListView
         listViewDiagnosticos.setCellFactory(new Callback<ListView<Diagnostico>, ListCell<Diagnostico>>() {
             @Override
             public ListCell<Diagnostico> call(ListView<Diagnostico> listView) {
@@ -57,7 +56,6 @@ public class MedicoVerHistorialController implements MedicoSubViewControllerBase
             }
         });
 
-        // Formatear cómo se muestra un Tratamiento en el ListView
         listViewTratamientos.setCellFactory(new Callback<ListView<Tratamiento>, ListCell<Tratamiento>>() {
             @Override
             public ListCell<Tratamiento> call(ListView<Tratamiento> listView) {
@@ -75,7 +73,6 @@ public class MedicoVerHistorialController implements MedicoSubViewControllerBase
             }
         });
 
-        // Listeners para mostrar detalles cuando se selecciona un item
         listViewDiagnosticos.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 mostrarDetalleDiagnostico(newVal);
@@ -99,8 +96,6 @@ public class MedicoVerHistorialController implements MedicoSubViewControllerBase
             return;
         }
 
-        // El médico solo puede ver historiales de pacientes que ha atendido o si tiene un rol que lo permita.
-        // El método obtenerHistorialPacienteParaMedico ya incluye esta lógica.
         HistorialMedico historial = sistemaHospitalario.obtenerHistorialPacienteParaMedico(medicoLogueado.getCedula(), cedulaPaciente);
 
         if (historial != null && historial.getPacienteAsociado() != null) {
@@ -112,7 +107,6 @@ public class MedicoVerHistorialController implements MedicoSubViewControllerBase
             listViewTratamientos.setItems(tratamientosObsList);
             txtAreaDetalleSeleccionado.clear();
         } else {
-            // El mensaje de error ya se imprime desde obtenerHistorialPacienteParaMedico
             mostrarAlerta("No Encontrado", "Paciente o Historial no Accesible", "No se encontró el paciente con cédula " + cedulaPaciente + " o no tiene permiso para ver su historial.", Alert.AlertType.INFORMATION);
             limpiarCamposHistorial();
         }

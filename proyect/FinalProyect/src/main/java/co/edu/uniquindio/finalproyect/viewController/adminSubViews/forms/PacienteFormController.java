@@ -1,10 +1,10 @@
 package co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms; // Nueva subcarpeta
 
-import co.edu.uniquindio.finalproyect.model.HistorialMedico; // Importación necesaria
+import co.edu.uniquindio.finalproyect.model.HistorialMedico;
 import co.edu.uniquindio.finalproyect.model.Paciente;
 import co.edu.uniquindio.finalproyect.model.Sexo;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
-import co.edu.uniquindio.finalproyect.model.TipoUsuario; // Importación necesaria
+import co.edu.uniquindio.finalproyect.model.TipoUsuario;
 import co.edu.uniquindio.finalproyect.viewController.adminSubViews.AdminPacientesMainController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +15,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.util.LinkedList; // Para el historial médico inicial
+import java.util.LinkedList;
 
 public class PacienteFormController {
 
@@ -31,8 +31,8 @@ public class PacienteFormController {
 
     private Stage dialogStage;
     private SistemaHospitalario sistemaHospitalario;
-    private Paciente pacienteOriginal; // Para saber si estamos editando o creando
-    private AdminPacientesMainController adminPacientesMainController; // Para refrescar la tabla
+    private Paciente pacienteOriginal;
+    private AdminPacientesMainController adminPacientesMainController;
     private boolean esNuevo = true;
 
     @FXML
@@ -57,13 +57,11 @@ public class PacienteFormController {
         if (paciente != null) {
             esNuevo = false;
             txtCedula.setText(paciente.getCedula());
-            txtCedula.setEditable(false); // Cédula no editable si se actualiza
+            txtCedula.setEditable(false);
             txtNombre.setText(paciente.getNombre());
             txtEdad.setText(String.valueOf(paciente.getEdad()));
             cbSexo.setValue(paciente.getSexo());
             txtNombreUsuario.setText(paciente.getNombreUsuario());
-            // Contraseña: decidir si se muestra/edita. Por seguridad, a menudo se deja en blanco o se pide nueva.
-            // txtContrasena.setText(paciente.getContrasena()); // No recomendado para mostrar
             txtNumSeguroSocial.setText(paciente.getNumeroSeguroSocial());
         } else {
             esNuevo = true;
@@ -85,7 +83,7 @@ public class PacienteFormController {
             }
             Sexo sexo = cbSexo.getValue();
             String nombreUsuario = txtNombreUsuario.getText();
-            String contrasena = txtContrasena.getText(); // Siempre tomarla, si está vacía y es nuevo, validar.
+            String contrasena = txtContrasena.getText();
             String numSeguro = txtNumSeguroSocial.getText();
 
             if (esNuevo && contrasena.isEmpty()) {
@@ -94,10 +92,7 @@ public class PacienteFormController {
             }
 
 
-            // Para un nuevo paciente, el historial se crea vacío dentro del método registrarPaciente o en su constructor si se ajusta.
-            // Si estás editando, el historial ya existe y no se modifica aquí directamente, sino sus componentes (diagnósticos, etc.).
-            Paciente pacienteEditado = new Paciente(nombre, cedula, sexo, edad, nombreUsuario, contrasena, TipoUsuario.PACIENTE, numSeguro, null); // El historial se manejará internamente o se asignará después si es necesario.
-            // Si se está editando y la contraseña está vacía, se debe conservar la original o manejarlo según la lógica de negocio.
+            Paciente pacienteEditado = new Paciente(nombre, cedula, sexo, edad, nombreUsuario, contrasena, TipoUsuario.PACIENTE, numSeguro, null);
             if (!esNuevo && contrasena.isEmpty() && pacienteOriginal != null) {
                 pacienteEditado.setContrasena(pacienteOriginal.getContrasena());
             }
@@ -105,10 +100,9 @@ public class PacienteFormController {
 
             boolean resultado;
             if (esNuevo) {
-                // El historial médico se crea dentro de registrarPaciente si no existe
                 resultado = sistemaHospitalario.registrarPaciente(pacienteEditado);
             } else {
-                pacienteEditado.setHistorialMedico(pacienteOriginal.getHistorialMedico()); // Mantener el historial original al actualizar
+                pacienteEditado.setHistorialMedico(pacienteOriginal.getHistorialMedico());
                 resultado = sistemaHospitalario.actualizarPaciente(pacienteEditado);
             }
 
@@ -143,7 +137,6 @@ public class PacienteFormController {
         }
         if (cbSexo.getValue() == null) mensajeError += "El sexo es obligatorio.\n";
         if (txtNombreUsuario.getText() == null || txtNombreUsuario.getText().isEmpty()) mensajeError += "El nombre de usuario es obligatorio.\n";
-        // Para nuevos, la contraseña es obligatoria. Para existentes, podría ser opcional si no se quiere cambiar.
         if (esNuevo && (txtContrasena.getText() == null || txtContrasena.getText().isEmpty())) {
             mensajeError += "La contraseña es obligatoria para nuevos usuarios.\n";
         }

@@ -1,6 +1,6 @@
-package co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms; // O el paquete que uses
+package co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms;
 
-import co.edu.uniquindio.finalproyect.model.CitaMedica; // Para el constructor de Medico
+import co.edu.uniquindio.finalproyect.model.CitaMedica;
 import co.edu.uniquindio.finalproyect.model.Medico;
 import co.edu.uniquindio.finalproyect.model.Sexo;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
@@ -17,7 +17,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.util.LinkedList; // Para el constructor de Medico
+import java.util.LinkedList;
 
 public class MedicoFormController {
 
@@ -31,12 +31,12 @@ public class MedicoFormController {
     @FXML private TextField txtEspecialidadMedico;
     @FXML private TextField txtLicenciaMedico;
     @FXML private Button btnGuardarMedico;
-    @FXML private Button btnCancelarMedico; // Asegúrate que este fx:id exista en MedicoFormView.fxml
+    @FXML private Button btnCancelarMedico;
 
     private Stage dialogStage;
     private SistemaHospitalario sistemaHospitalario;
-    private Medico medicoOriginal; // Para saber si estamos editando o creando
-    private AdminMedicosMainController adminMedicosMainController; // Para refrescar la tabla
+    private Medico medicoOriginal;
+    private AdminMedicosMainController adminMedicosMainController;
     private boolean esNuevo = true;
 
     @FXML
@@ -54,12 +54,11 @@ public class MedicoFormController {
             esNuevo = false;
             lblTituloFormMedico.setText("Actualizar Médico");
             txtCedulaMedico.setText(medico.getCedula());
-            txtCedulaMedico.setEditable(false); // Cédula no editable si se actualiza
+            txtCedulaMedico.setEditable(false);
             txtNombreMedico.setText(medico.getNombre());
             txtEdadMedico.setText(String.valueOf(medico.getEdad()));
             cbSexoMedico.setValue(medico.getSexo());
             txtUsuarioMedico.setText(medico.getNombreUsuario());
-            // Contraseña: usualmente no se precarga por seguridad. Si está vacía al guardar, se mantiene la original.
             txtEspecialidadMedico.setText(medico.getEspecialidad());
             txtLicenciaMedico.setText(medico.getNumeroLicenciaMedica());
         } else {
@@ -74,7 +73,7 @@ public class MedicoFormController {
         if (validarCamposMedico()) {
             String cedula = txtCedulaMedico.getText();
             String nombre = txtNombreMedico.getText();
-            int edad = Integer.parseInt(txtEdadMedico.getText()); // Ya validado
+            int edad = Integer.parseInt(txtEdadMedico.getText());
             Sexo sexo = cbSexoMedico.getValue();
             String nombreUsuario = txtUsuarioMedico.getText();
             String contrasena = txtContrasenaMedico.getText();
@@ -86,11 +85,8 @@ public class MedicoFormController {
                 return;
             }
 
-            // El constructor de Medico espera un LinkedList<CitaMedica> para horarioConsultas.
-            // Este parámetro es para el campo listCitasMedicas, que debería inicializarse vacío.
-            Medico medicoEditado = new Medico(nombre, cedula, sexo, edad, nombreUsuario, contrasena, TipoUsuario.MEDICO, especialidad, numLicencia, new LinkedList<CitaMedica>()); //
+            Medico medicoEditado = new Medico(nombre, cedula, sexo, edad, nombreUsuario, contrasena, TipoUsuario.MEDICO, especialidad, numLicencia, new LinkedList<CitaMedica>());
 
-            // Si se está editando y la contraseña se dejó en blanco, mantener la contraseña original.
             if (!esNuevo && (contrasena == null || contrasena.trim().isEmpty()) && medicoOriginal != null) {
                 medicoEditado.setContrasena(medicoOriginal.getContrasena());
             }
@@ -99,7 +95,6 @@ public class MedicoFormController {
             if (esNuevo) {
                 resultado = sistemaHospitalario.registrarMedico(medicoEditado); //
             } else {
-                // Asegurarse de que no se pierdan las listas internas del médico original si no se copian en actualizarMedico
                 if(medicoOriginal != null) {
                     medicoEditado.setListCitasMedicas(medicoOriginal.getListCitasMedicas());
                     medicoEditado.setListHorariosDisponibilidad(medicoOriginal.getListHorariosDisponibilidad());
@@ -120,7 +115,7 @@ public class MedicoFormController {
     }
 
     @FXML
-    void handleCancelarMedico(ActionEvent event) { // Conectado al botón Cancelar del FXML
+    void handleCancelarMedico(ActionEvent event) {
         if (dialogStage != null) {
             dialogStage.close();
         }
@@ -162,7 +157,7 @@ public class MedicoFormController {
         alert.setTitle(titulo);
         alert.setHeaderText(cabecera);
         alert.setContentText(contenido);
-        alert.initOwner(dialogStage); // Para que la alerta sea modal respecto al formulario
+        alert.initOwner(dialogStage);
         alert.showAndWait();
     }
 }

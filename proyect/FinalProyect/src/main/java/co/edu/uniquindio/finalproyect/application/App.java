@@ -5,8 +5,6 @@ import co.edu.uniquindio.finalproyect.model.TipoUsuario;
 import co.edu.uniquindio.finalproyect.model.Usuario;
 import co.edu.uniquindio.finalproyect.singleton.SistemaHospitalarioSingleton;
 import co.edu.uniquindio.finalproyect.viewController.*;
-// No necesitas importar los controladores de sub-vistas aquí directamente
-// si los controladores principales los manejan a través de interfaces.
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -16,14 +14,14 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL; // Importar URL
+import java.net.URL;
 
 public class App extends Application {
 
     private Stage primaryStage;
     private SistemaHospitalario sistemaHospitalario;
 
-    // Ruta base correcta a tus vistas FXML
+
     private final String VIEWS_BASE_PATH = "/co/edu/uniquindio/finalproyect/views/";
 
     @Override
@@ -64,7 +62,7 @@ public class App extends Application {
 
         String fxmlFile = "";
         String windowTitle = "Dashboard";
-        Class<?> controllerClass = null; // Usamos Class<?> para generalizar
+        Class<?> controllerClass = null;
 
         switch (usuarioLogueado.getTipoUsuario()) {
             case ADMINISTRADOR:
@@ -91,9 +89,7 @@ public class App extends Application {
         cargarVista(fxmlFile, controllerClass, usuarioLogueado, true, windowTitle);
     }
 
-    /**
-     * Método genérico para cargar vistas FXML.
-     */
+
     private <T> void cargarVista(String fxmlPath, Class<T> controllerExpectedType, Usuario usuarioLogueado, boolean esDashboard, String windowTitleOverride) {
         try {
             URL resourceUrl = App.class.getResource(fxmlPath);
@@ -109,7 +105,7 @@ public class App extends Application {
 
             Object rawController = loader.getController();
 
-            // Inyectar dependencias y datos
+
             if (controllerExpectedType.isInstance(rawController)) {
                 T controller = controllerExpectedType.cast(rawController);
                 if (controller instanceof WelcomeViewController) {

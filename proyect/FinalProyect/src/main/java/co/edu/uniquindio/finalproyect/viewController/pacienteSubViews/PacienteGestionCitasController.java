@@ -31,7 +31,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator; // Importar Comparator
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,7 +41,6 @@ public class PacienteGestionCitasController implements PacienteSubViewController
     private SistemaHospitalario sistemaHospitalario;
     private Paciente pacienteLogueado;
 
-    // RUTA BASE CORRECTA Y COMPLETA para los FXML dentro de este paquete de vistas
     private final String VIEWS_BASE_PATH = "/co/edu/uniquindio/finalproyect/views/";
 
 
@@ -85,7 +84,6 @@ public class PacienteGestionCitasController implements PacienteSubViewController
 
     @FXML
     public void initialize() {
-        // La configuración de las columnas se realiza en configurarTablaCitas
     }
 
     private void configurarTablaCitas() {
@@ -140,8 +138,6 @@ public class PacienteGestionCitasController implements PacienteSubViewController
                 if(tablaMisCitas != null) tablaMisCitas.setItems(misCitasObsList);
             }
             if(misCitasObsList != null) misCitasObsList.clear();
-            // Considerar mostrar un mensaje en la tabla si está vacía
-            // tablaMisCitas.setPlaceholder(new Label("Error al cargar citas o no hay citas."));
             return;
         }
 
@@ -171,7 +167,7 @@ public class PacienteGestionCitasController implements PacienteSubViewController
         }
         System.out.println("Botón Solicitar Nueva Cita presionado por: " + pacienteLogueado.getNombre());
         try {
-            String fxmlFormPath = VIEWS_BASE_PATH + "PacienteSolicitarCitaForm.fxml"; // RUTA CORREGIDA
+            String fxmlFormPath = VIEWS_BASE_PATH + "PacienteSolicitarCitaForm.fxml";
             URL resourceUrl = getClass().getResource(fxmlFormPath);
 
             if (resourceUrl == null) {
@@ -181,7 +177,7 @@ public class PacienteGestionCitasController implements PacienteSubViewController
             }
 
             FXMLLoader loader = new FXMLLoader(resourceUrl);
-            Parent page = loader.load(); // Esta es la línea 154 que causaba el error
+            Parent page = loader.load();
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Solicitar Nueva Cita Médica");

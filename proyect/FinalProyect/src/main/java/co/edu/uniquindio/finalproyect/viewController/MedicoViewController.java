@@ -25,7 +25,6 @@ public class MedicoViewController {
     private SistemaHospitalario sistemaHospitalario;
     private Medico medicoLogueado;
 
-    // RUTA BASE CORRECTA para las sub-vistas del médico
     private final String VIEWS_BASE_PATH = "/co/edu/uniquindio/finalproyect/views/";
 
     @FXML private BorderPane mainMedicoPanel;
@@ -73,7 +72,6 @@ public class MedicoViewController {
 
     @FXML
     void initialize() {
-        // Método llamado por FXMLLoader
     }
 
     @FXML

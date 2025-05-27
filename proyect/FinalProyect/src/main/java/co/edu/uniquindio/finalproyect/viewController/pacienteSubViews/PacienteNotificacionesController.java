@@ -12,10 +12,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.stage.Stage; // Para initOwner en Alerta
+import javafx.stage.Stage;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator; // Para ordenar
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 public class PacienteNotificacionesController implements PacienteSubViewControllerBase {
@@ -55,7 +55,6 @@ public class PacienteNotificacionesController implements PacienteSubViewControll
 
     @FXML
     public void initialize() {
-        // Método llamado por FXMLLoader
     }
 
     @FXML
@@ -74,14 +73,11 @@ public class PacienteNotificacionesController implements PacienteSubViewControll
         }
         misNotificacionesObsList.clear();
 
-        // Simulación de notificaciones:
-        // 1. Notificaciones sobre el estado de sus citas.
-        // 2. Podrías añadir otros tipos de notificaciones si el sistema las generara.
 
         if (sistemaHospitalario.getListCitasMedicas() != null) {
             sistemaHospitalario.getListCitasMedicas().stream()
                     .filter(cita -> cita.getPaciente().getCedula().equals(pacienteLogueado.getCedula()))
-                    .sorted(Comparator.comparing(CitaMedica::getFecha).thenComparing(CitaMedica::getHora).reversed()) // Más recientes primero
+                    .sorted(Comparator.comparing(CitaMedica::getFecha).thenComparing(CitaMedica::getHora).reversed())
                     .forEach(cita -> {
                         String mensajeBase = String.format("Cita con Dr(a). %s (%s) el %s a las %s (Sala: %s)",
                                 cita.getMedico().getNombre(),
@@ -102,10 +98,8 @@ public class PacienteNotificacionesController implements PacienteSubViewControll
                                 notificacion = "[CANCELADA] " + mensajeBase + " ha sido cancelada.";
                                 break;
                             case FINALIZADA:
-                                // Podríamos no mostrar las finalizadas como "notificación activa"
-                                // o mostrarlas con un mensaje diferente.
-                                // notificacion = "[FINALIZADA] " + mensajeBase + " ha concluido.";
-                                break; // Omitir finalizadas de la lista de notificaciones activas
+
+                                break;
                             default:
                                 break;
                         }

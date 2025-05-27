@@ -23,7 +23,6 @@ public class LoginViewController {
 
     public void setApp(App mainApp) {
         this.mainApp = mainApp;
-        // Obtener la instancia de tu SistemaHospitalario
         this.sistemaHospitalario = mainApp.getSistemaHospitalario();
         if (this.sistemaHospitalario == null) { // Fallback por si acaso
             this.sistemaHospitalario = SistemaHospitalarioSingleton.getInstance().getSistemaHospitalario();
@@ -44,11 +43,9 @@ public class LoginViewController {
 
         if (usuarioLogueado != null) {
             System.out.println("¡Login exitoso! Usuario: " + usuarioLogueado.getNombreUsuario() + " Tipo: " + usuarioLogueado.getTipoUsuario());
-            // Guardar el usuario logueado en el Singleton para acceso global si es necesario
-            // SistemaHospitalarioSingleton.getInstance().setUsuarioLogueado(usuarioLogueado); // Tú decides si esto es útil
 
             if (mainApp != null) {
-                mainApp.mostrarDashboard(usuarioLogueado); // Navega al dashboard correspondiente
+                mainApp.mostrarDashboard(usuarioLogueado);
             }
         } else {
             mostrarAlerta("Error de Autenticación", "Credenciales inválidas", "El nombre de usuario o la contraseña son incorrectos.");
@@ -65,6 +62,6 @@ public class LoginViewController {
 
     @FXML
     void initialize() {
-        // Código de inicialización si es necesario
+
     }
 }

@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import java.time.LocalDate;
 import java.util.LinkedList;
-import java.util.UUID; // Para generar IDs de medicamentos de ejemplo
+import java.util.UUID;
 
 public class MedicoRegistrarTratamientoController implements MedicoSubViewControllerBase {
 
@@ -47,7 +47,6 @@ public class MedicoRegistrarTratamientoController implements MedicoSubViewContro
     public void inicializarDatosSubVista() {
         medicamentosParaTratamientoList = FXCollections.observableArrayList();
         listViewMedicamentosTrat.setItems(medicamentosParaTratamientoList);
-        // Formato para mostrar medicamentos en el ListView
         listViewMedicamentosTrat.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Medicamento item, boolean empty) {
@@ -83,16 +82,13 @@ public class MedicoRegistrarTratamientoController implements MedicoSubViewContro
     void handleAddMedicamentoLista() {
         String nombreMed = txtNombreMedicamento.getText();
         if (nombreMed != null && !nombreMed.trim().isEmpty()) {
-            // En un sistema real, buscarías el medicamento en un inventario.
-            // Por ahora, creamos uno temporalmente para la lista del tratamiento.
-            // Deberías tener una forma de gestionar el inventario de medicamentos.
             Medicamento med = new Medicamento(
-                    UUID.randomUUID().toString().substring(0,8), // ID Temporal
+                    UUID.randomUUID().toString().substring(0,8),
                     nombreMed,
-                    "Presentación Desconocida", // Debería venir de un catálogo
-                    0, // Dosis base, debería venir de un catálogo
-                    "Fabricante Desconocido", // Debería venir de un catálogo
-                    false // Requiere receta, debería venir de un catálogo
+                    "Presentación Desconocida",
+                    0,
+                    "Fabricante Desconocido",
+                    false
             );
             medicamentosParaTratamientoList.add(med);
             txtNombreMedicamento.clear();
@@ -135,9 +131,9 @@ public class MedicoRegistrarTratamientoController implements MedicoSubViewContro
                 fechaInicio,
                 fechaFin,
                 descripcion,
-                listaMedicamentosFinal, //
+                listaMedicamentosFinal,
                 dosisFrec
-        ); //
+        );
 
         if (registrado) {
             mostrarAlerta("Éxito", "Tratamiento Registrado", "El tratamiento ha sido guardado correctamente.", Alert.AlertType.INFORMATION);

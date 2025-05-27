@@ -35,7 +35,7 @@ public class MedicoGestionarMisHorariosController implements MedicoSubViewContro
     @FXML private Button btnLimpiarCamposHorario;
 
     private ObservableList<HorarioDisponibilidad> misHorariosObsList;
-    private HorarioDisponibilidad horarioSeleccionadoParaEdicion = null; // Para saber si estamos editando
+    private HorarioDisponibilidad horarioSeleccionadoParaEdicion = null;
 
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -50,7 +50,6 @@ public class MedicoGestionarMisHorariosController implements MedicoSubViewContro
     public void inicializarDatosSubVista() {
         if (medicoLogueado == null) return;
 
-        // Configurar ComboBox de días si no se hizo en FXML
         if (cbDiaSemanaHorario.getItems().isEmpty()) {
             cbDiaSemanaHorario.setItems(FXCollections.observableArrayList(DayOfWeek.values()));
         }
@@ -59,14 +58,12 @@ public class MedicoGestionarMisHorariosController implements MedicoSubViewContro
         colHoraInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
         colHoraFin.setCellValueFactory(new PropertyValueFactory<>("horaFin"));
 
-        // Formatear la visualización de LocalTime en la tabla
         colHoraInicio.setCellFactory(column -> formatTimeCell());
         colHoraFin.setCellFactory(column -> formatTimeCell());
 
 
         cargarMisHorarios();
 
-        // Listener para cargar campos al seleccionar un horario de la tabla
         tablaMisHorarios.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 horarioSeleccionadoParaEdicion = newSelection;
@@ -96,8 +93,6 @@ public class MedicoGestionarMisHorariosController implements MedicoSubViewContro
 
 
     private void cargarMisHorarios() {
-        // El médico tiene su propia lista de horarios.
-        // El método consultarHorariosDisponibilidad(cedulaMedico) ya accede a esta.
         misHorariosObsList = FXCollections.observableArrayList(sistemaHospitalario.consultarHorariosDisponibilidad(medicoLogueado.getCedula()));
         tablaMisHorarios.setItems(misHorariosObsList);
         tablaMisHorarios.refresh();
@@ -129,17 +124,17 @@ public class MedicoGestionarMisHorariosController implements MedicoSubViewContro
         }
 
         boolean resultado;
-        if (horarioSeleccionadoParaEdicion != null) { // Actualizando
+        if (horarioSeleccionadoParaEdicion != null) {
             resultado = sistemaHospitalario.actualizarHorarioDisponibilidad(
                     medicoLogueado.getCedula(),
-                    horarioSeleccionadoParaEdicion.getIdHorario(), // Se necesita el ID del horario original
+                    horarioSeleccionadoParaEdicion.getIdHorario(),
                     dia, horaInicio, horaFin
-            ); //
-        } else { // Agregando nuevo
+            );
+        } else {
             resultado = sistemaHospitalario.registrarHorarioDisponibilidad(
                     medicoLogueado.getCedula(),
                     dia, horaInicio, horaFin
-            ); //
+            );
         }
 
 
@@ -167,7 +162,7 @@ public class MedicoGestionarMisHorariosController implements MedicoSubViewContro
         Optional<ButtonType> result = confirmacion.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            boolean eliminado = sistemaHospitalario.eliminarHorarioDisponibilidad(medicoLogueado.getCedula(), seleccionado.getIdHorario()); //
+            boolean eliminado = sistemaHospitalario.eliminarHorarioDisponibilidad(medicoLogueado.getCedula(), seleccionado.getIdHorario());
             if (eliminado) {
                 mostrarAlerta("Éxito", "Horario Eliminado", "El horario ha sido eliminado.", Alert.AlertType.INFORMATION);
                 cargarMisHorarios();

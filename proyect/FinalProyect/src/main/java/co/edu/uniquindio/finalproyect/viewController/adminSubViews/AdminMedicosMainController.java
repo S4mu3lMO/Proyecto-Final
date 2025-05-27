@@ -25,7 +25,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL; // Importar URL
+import java.net.URL;
 import java.util.Optional;
 
 public class AdminMedicosMainController implements SubViewControllerBase {
@@ -34,7 +34,6 @@ public class AdminMedicosMainController implements SubViewControllerBase {
     private SistemaHospitalario sistemaHospitalario;
     private AdministradorViewController administradorViewController;
 
-    // RUTA BASE CORRECTA Y COMPLETA para los FXML
     private final String VIEWS_BASE_PATH = "/co/edu/uniquindio/finalproyect/views/";
 
     @FXML private TableView<Medico> tablaMedicos;
@@ -74,7 +73,6 @@ public class AdminMedicosMainController implements SubViewControllerBase {
 
     @FXML
     public void initialize() {
-        // La inicialización principal ocurre en inicializarSubView
     }
 
     private void cargarMedicosEnTabla() {
@@ -155,7 +153,7 @@ public class AdminMedicosMainController implements SubViewControllerBase {
 
     private void mostrarDialogoFormularioMedico(Medico medico) {
         try {
-            String fxmlFormPath = VIEWS_BASE_PATH + "MedicoFormView.fxml"; // RUTA CORREGIDA
+            String fxmlFormPath = VIEWS_BASE_PATH + "MedicoFormView.fxml";
             URL resourceUrl = getClass().getResource(fxmlFormPath);
 
             if (resourceUrl == null) {

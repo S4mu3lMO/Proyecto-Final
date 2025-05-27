@@ -57,9 +57,7 @@
           <id>default-cli</id>
           <configuration>
             <mainClass>co.edu.uniquindio.finalproyect.application.App</mainClass>
-            <!-- Si tu módulo se llama 'co.edu.uniquindio.finalproyect', podría ser:
-            <mainClass>co.edu.uniquindio.finalproyect/co.edu.uniquindio.finalproyect.application.App</mainClass>
-            Prueba primero con la versión sin el nombre del módulo. -->
+
             <launcher>app</launcher>
             <jlinkZipName>app</jlinkZipName>
             <jlinkImageName>app</jlinkImageName>

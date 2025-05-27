@@ -33,7 +33,7 @@ public class MedicoRegistrarDiagnosticoController implements MedicoSubViewContro
     @Override
     public void inicializarDatosSubVista() {
         limpiarFormularioDiagnostico();
-        datePickerFechaDiagnostico.setValue(LocalDate.now()); // Fecha actual por defecto
+        datePickerFechaDiagnostico.setValue(LocalDate.now());
     }
 
     @FXML
@@ -43,9 +43,6 @@ public class MedicoRegistrarDiagnosticoController implements MedicoSubViewContro
             mostrarAlerta("Entrada Inválida", "Cédula Vacía", "Ingrese la cédula del paciente.", Alert.AlertType.WARNING);
             return;
         }
-        // Aquí el médico debería poder buscar cualquier paciente para diagnosticar,
-        // asumiendo que la relación se establece al registrar el diagnóstico o a través de una cita previa.
-        // El método buscarPacientePorCedula es general.
         this.pacienteSeleccionado = sistemaHospitalario.buscarPacientePorCedula(cedula);
         if (pacienteSeleccionado != null) {
             lblNombrePacienteDiag.setText("Paciente: " + pacienteSeleccionado.getNombre());
@@ -74,7 +71,7 @@ public class MedicoRegistrarDiagnosticoController implements MedicoSubViewContro
                 pacienteSeleccionado.getCedula(),
                 descripcion,
                 fecha
-        ); //
+        );
 
         if (registrado) {
             mostrarAlerta("Éxito", "Diagnóstico Registrado", "El diagnóstico ha sido guardado correctamente.", Alert.AlertType.INFORMATION);

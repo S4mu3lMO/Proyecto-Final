@@ -9,12 +9,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-// import javafx.scene.control.ListCell; // No se usa directamente si formateamos el String
 import javafx.scene.control.ListView;
-import javafx.stage.Stage; // Para initOwner en Alerta
+import javafx.stage.Stage;
 
 import java.time.format.DateTimeFormatter;
-// import java.util.stream.Collectors; // No se usa en este controlador
 
 public class MedicoNotificacionesController implements MedicoSubViewControllerBase {
 
@@ -22,11 +20,10 @@ public class MedicoNotificacionesController implements MedicoSubViewControllerBa
     private SistemaHospitalario sistemaHospitalario;
     private Medico medicoLogueado;
 
-    @FXML private ListView<String> listViewNotificaciones; // Mostraremos strings formateados
+    @FXML private ListView<String> listViewNotificaciones;
     @FXML private Button btnRefrescarNotificaciones;
 
     private ObservableList<String> notificacionesObsList;
-    // Formateadores específicos para fecha y hora para mayor claridad
     private final DateTimeFormatter fechaFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     private final DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -41,7 +38,6 @@ public class MedicoNotificacionesController implements MedicoSubViewControllerBa
     @Override
     public void inicializarDatosSubVista() {
         if (medicoLogueado == null) {
-            // Opcional: mostrar alerta si el médico no está logueado
             mostrarAlerta("Error de Sesión", "No se pudo identificar al médico.", "Por favor, inicie sesión nuevamente.", Alert.AlertType.ERROR);
             return;
         }
@@ -57,7 +53,7 @@ public class MedicoNotificacionesController implements MedicoSubViewControllerBa
 
     private void cargarNotificaciones() {
         if (medicoLogueado == null || sistemaHospitalario == null) {
-            if (notificacionesObsList == null) { // Asegurarse que la lista esté inicializada
+            if (notificacionesObsList == null) {
                 notificacionesObsList = FXCollections.observableArrayList();
                 listViewNotificaciones.setItems(notificacionesObsList);
             }
@@ -66,8 +62,6 @@ public class MedicoNotificacionesController implements MedicoSubViewControllerBa
         }
         notificacionesObsList.clear();
 
-        // La lógica de notificaciones aquí es una simulación mostrando las citas del médico.
-        // Un sistema real tendría un mecanismo de eventos para generar y almacenar notificaciones.
         if (medicoLogueado.getListCitasMedicas() != null && !medicoLogueado.getListCitasMedicas().isEmpty()) {
             medicoLogueado.getListCitasMedicas().stream()
                     .sorted((c1, c2) -> { // Ordenar por fecha y hora
@@ -81,8 +75,8 @@ public class MedicoNotificacionesController implements MedicoSubViewControllerBa
                         String notificacion = String.format("Cita (%s): Paciente %s, Fecha: %s %s, Sala: %s. Motivo: %s",
                                 cita.getEstadoCita(),
                                 (cita.getPaciente() != null ? cita.getPaciente().getNombre() : "N/A"),
-                                cita.getFecha().format(this.fechaFormatter), // Usar el formateador de fecha
-                                cita.getHora().format(this.horaFormatter),   // Usar el formateador de hora
+                                cita.getFecha().format(this.fechaFormatter),
+                                cita.getHora().format(this.horaFormatter),
                                 (cita.getSala() != null ? cita.getSala().getNumeroSala() : "N/A"),
                                 cita.getMotivo()
                         );
@@ -96,13 +90,11 @@ public class MedicoNotificacionesController implements MedicoSubViewControllerBa
         }
     }
 
-    // Método de alerta privado y autónomo para esta clase
     private void mostrarAlerta(String titulo, String cabecera, String contenido, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
         alert.setTitle(titulo);
         alert.setHeaderText(cabecera);
         alert.setContentText(contenido);
-        // Hacer la alerta modal a la ventana principal de la aplicación si es posible
         if (mainApp != null && mainApp.getPrimaryStage() != null) {
             alert.initOwner(mainApp.getPrimaryStage());
         }
