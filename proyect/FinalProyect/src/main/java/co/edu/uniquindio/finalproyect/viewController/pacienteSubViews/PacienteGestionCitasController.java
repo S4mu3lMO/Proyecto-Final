@@ -6,6 +6,7 @@ import co.edu.uniquindio.finalproyect.model.EstadoCita;
 import co.edu.uniquindio.finalproyect.model.Medico;
 import co.edu.uniquindio.finalproyect.model.Paciente;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
+import co.edu.uniquindio.finalproyect.model.Sala;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -21,14 +22,16 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.TableCell; // <-- IMPORTACIÓN AÑADIDA Y NECESARIA
+import javafx.scene.control.TableCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator; // Importar Comparator
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,6 +40,10 @@ public class PacienteGestionCitasController implements PacienteSubViewController
     private App mainApp;
     private SistemaHospitalario sistemaHospitalario;
     private Paciente pacienteLogueado;
+
+    // RUTA BASE CORRECTA Y COMPLETA para los FXML dentro de este paquete de vistas
+    private final String VIEWS_BASE_PATH = "/co/edu/uniquindio/finalproyect/views/";
+
 
     @FXML private TableView<CitaMedica> tablaMisCitas;
     @FXML private TableColumn<CitaMedica, LocalDate> colFechaCita;
@@ -69,7 +76,7 @@ public class PacienteGestionCitasController implements PacienteSubViewController
     @Override
     public void inicializarDatosSubVistaPaciente() {
         if (pacienteLogueado == null) {
-            mostrarAlerta("Error", "No se pudo identificar al paciente.", Alert.AlertType.ERROR);
+            mostrarAlerta("Error de Sesión", "No se pudo identificar al paciente. Por favor, inicie sesión nuevamente.", Alert.AlertType.ERROR);
             return;
         }
         configurarTablaCitas();
@@ -78,16 +85,25 @@ public class PacienteGestionCitasController implements PacienteSubViewController
 
     @FXML
     public void initialize() {
-        // La configuración de las columnas se hace en configurarTablaCitas
-        // que es llamado desde inicializarDatosSubVistaPaciente
+        // La configuración de las columnas se realiza en configurarTablaCitas
     }
 
     private void configurarTablaCitas() {
         colFechaCita.setCellValueFactory(new PropertyValueFactory<>("fecha"));
         colHoraCita.setCellValueFactory(new PropertyValueFactory<>("hora"));
-        colMedicoCita.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMedico().getNombre()));
-        colEspecialidadCita.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMedico().getEspecialidad()));
-        colSalaCita.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSala().getNumeroSala()));
+
+        colMedicoCita.setCellValueFactory(cellData -> {
+            Medico medico = cellData.getValue().getMedico();
+            return new SimpleStringProperty(medico != null ? medico.getNombre() : "N/A");
+        });
+        colEspecialidadCita.setCellValueFactory(cellData -> {
+            Medico medico = cellData.getValue().getMedico();
+            return new SimpleStringProperty(medico != null ? medico.getEspecialidad() : "N/A");
+        });
+        colSalaCita.setCellValueFactory(cellData -> {
+            Sala sala = cellData.getValue().getSala();
+            return new SimpleStringProperty(sala != null ? sala.getNumeroSala() : "N/A");
+        });
         colMotivoCita.setCellValueFactory(new PropertyValueFactory<>("motivo"));
         colEstadoCita.setCellValueFactory(new PropertyValueFactory<>("estadoCita"));
 
@@ -118,22 +134,27 @@ public class PacienteGestionCitasController implements PacienteSubViewController
 
 
     private void cargarMisCitas() {
-        if (pacienteLogueado == null || sistemaHospitalario == null) return;
+        if (pacienteLogueado == null || sistemaHospitalario == null) {
+            if (misCitasObsList == null) {
+                misCitasObsList = FXCollections.observableArrayList();
+                if(tablaMisCitas != null) tablaMisCitas.setItems(misCitasObsList);
+            }
+            if(misCitasObsList != null) misCitasObsList.clear();
+            // Considerar mostrar un mensaje en la tabla si está vacía
+            // tablaMisCitas.setPlaceholder(new Label("Error al cargar citas o no hay citas."));
+            return;
+        }
 
         misCitasObsList = FXCollections.observableArrayList(
                 sistemaHospitalario.getListCitasMedicas().stream()
-                        .filter(cita -> cita.getPaciente().getCedula().equals(pacienteLogueado.getCedula()))
-                        .sorted((c1, c2) -> {
-                            int dateCompare = c1.getFecha().compareTo(c2.getFecha());
-                            if (dateCompare == 0) {
-                                return c1.getHora().compareTo(c2.getHora());
-                            }
-                            return dateCompare;
-                        })
+                        .filter(cita -> cita.getPaciente() != null && cita.getPaciente().getCedula().equals(pacienteLogueado.getCedula()))
+                        .sorted(Comparator.comparing(CitaMedica::getFecha).thenComparing(CitaMedica::getHora))
                         .collect(Collectors.toList())
         );
-        tablaMisCitas.setItems(misCitasObsList);
-        tablaMisCitas.refresh();
+        if(tablaMisCitas != null) {
+            tablaMisCitas.setItems(misCitasObsList);
+            tablaMisCitas.refresh();
+        }
     }
 
     @FXML
@@ -150,8 +171,17 @@ public class PacienteGestionCitasController implements PacienteSubViewController
         }
         System.out.println("Botón Solicitar Nueva Cita presionado por: " + pacienteLogueado.getNombre());
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/PacienteSolicitarCitaForm.fxml"));
-            Parent page = loader.load();
+            String fxmlFormPath = VIEWS_BASE_PATH + "PacienteSolicitarCitaForm.fxml"; // RUTA CORREGIDA
+            URL resourceUrl = getClass().getResource(fxmlFormPath);
+
+            if (resourceUrl == null) {
+                System.err.println("Error Crítico en PacienteGestionCitasController: No se encuentra el archivo FXML del formulario en la ruta: " + fxmlFormPath);
+                mostrarAlerta("Error Fatal de Carga", "Archivo FXML del formulario no encontrado. Verifique la ruta.", Alert.AlertType.ERROR);
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(resourceUrl);
+            Parent page = loader.load(); // Esta es la línea 154 que causaba el error
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Solicitar Nueva Cita Médica");
@@ -164,6 +194,11 @@ public class PacienteGestionCitasController implements PacienteSubViewController
             dialogStage.setScene(scene);
 
             PacienteSolicitarCitaFormController controller = loader.getController();
+            if (controller == null) {
+                System.err.println("Error Crítico: El controlador para " + fxmlFormPath + " es nulo. Verifica el fx:controller en el FXML.");
+                mostrarAlerta("Error de Carga", "No se pudo obtener el controlador del formulario.", Alert.AlertType.ERROR);
+                return;
+            }
             controller.setDialogStage(dialogStage);
             controller.setMainApp(mainApp);
             controller.setSistemaHospitalario(this.sistemaHospitalario);
@@ -171,15 +206,14 @@ public class PacienteGestionCitasController implements PacienteSubViewController
             controller.setPacienteGestionCitasController(this);
             controller.inicializarFormulario();
 
-
             dialogStage.showAndWait();
 
         } catch (IOException e) {
             e.printStackTrace();
-            mostrarAlerta("Error de Carga", "No se pudo abrir el formulario de solicitud de cita.", Alert.AlertType.ERROR);
-        } catch (NullPointerException e) {
+            mostrarAlerta("Error de Carga (IOException)", "No se pudo abrir el formulario de solicitud de cita: " + e.getMessage(), Alert.AlertType.ERROR);
+        } catch (Exception e) {
             e.printStackTrace();
-            mostrarAlerta("Error de Carga", "Recurso FXML del formulario de solicitud de cita no encontrado. Verifique la ruta: /views/PacienteSolicitarCitaForm.fxml", Alert.AlertType.ERROR);
+            mostrarAlerta("Error Inesperado", "Ocurrió un error al intentar abrir el formulario: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -203,10 +237,14 @@ public class PacienteGestionCitasController implements PacienteSubViewController
 
         Alert alertConfirmacion = new Alert(Alert.AlertType.CONFIRMATION);
         alertConfirmacion.setTitle("Confirmar Cancelación");
-        alertConfirmacion.setHeaderText("Cancelar Cita con Dr(a). " + citaSeleccionada.getMedico().getNombre());
+        alertConfirmacion.setHeaderText("Cancelar Cita con Dr(a). " + (citaSeleccionada.getMedico() != null ? citaSeleccionada.getMedico().getNombre() : "N/A"));
         alertConfirmacion.setContentText("¿Está seguro de que desea cancelar esta cita programada para el " +
                 citaSeleccionada.getFecha().format(dateFormatter) + " a las " +
                 citaSeleccionada.getHora().format(timeFormatter) + "?");
+
+        if (mainApp != null && mainApp.getPrimaryStage() != null) {
+            alertConfirmacion.initOwner(mainApp.getPrimaryStage());
+        }
 
         Optional<ButtonType> resultado = alertConfirmacion.showAndWait();
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
@@ -224,10 +262,10 @@ public class PacienteGestionCitasController implements PacienteSubViewController
         cargarMisCitas();
     }
 
-    private void mostrarAlerta(String titulo, String contenido, Alert.AlertType tipo) {
+    private void mostrarAlerta(String cabecera, String contenido, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
         alert.setTitle("Información del Sistema");
-        alert.setHeaderText(titulo);
+        alert.setHeaderText(cabecera);
         alert.setContentText(contenido);
         if (mainApp != null && mainApp.getPrimaryStage() != null) {
             alert.initOwner(mainApp.getPrimaryStage());

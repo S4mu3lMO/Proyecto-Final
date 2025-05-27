@@ -1,10 +1,14 @@
-package co.edu.uniquindio.finalproyect.viewController.adminSubViews; // Nueva subcarpeta para claridad
+package co.edu.uniquindio.finalproyect.viewController.adminSubViews;
 
 import co.edu.uniquindio.finalproyect.application.App;
 import co.edu.uniquindio.finalproyect.model.Paciente;
 import co.edu.uniquindio.finalproyect.model.Sexo;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
+import co.edu.uniquindio.finalproyect.model.TipoUsuario;
 import co.edu.uniquindio.finalproyect.viewController.AdministradorViewController;
+import co.edu.uniquindio.finalproyect.viewController.adminSubViews.SubViewControllerBase;
+import co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms.PacienteFormController;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,22 +18,25 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
-import co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms.PacienteFormController;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL; // Importar URL
 import java.util.Optional;
 
-
-public class AdminPacientesMainController implements SubViewControllerBase { // Implementa la interfaz
+public class AdminPacientesMainController implements SubViewControllerBase {
 
     private App mainApp;
     private SistemaHospitalario sistemaHospitalario;
-    private AdministradorViewController administradorViewController; // Referencia al controlador padre
+    private AdministradorViewController administradorViewController;
+
+    // RUTA BASE CORRECTA Y COMPLETA para los FXML
+    private final String VIEWS_BASE_PATH = "/co/edu/uniquindio/finalproyect/views/";
 
     @FXML private TableView<Paciente> tablaPacientes;
     @FXML private TableColumn<Paciente, String> colCedulaPaciente;
@@ -37,7 +44,7 @@ public class AdminPacientesMainController implements SubViewControllerBase { // 
     @FXML private TableColumn<Paciente, Integer> colEdadPaciente;
     @FXML private TableColumn<Paciente, Sexo> colSexoPaciente;
     @FXML private TableColumn<Paciente, String> colUsuarioPaciente;
-    // Añade más columnas según necesites
+    @FXML private TableColumn<Paciente, String> colNumSeguroPaciente;
 
     @FXML private Button btnCrearPaciente;
     @FXML private Button btnActualizarPaciente;
@@ -62,25 +69,21 @@ public class AdminPacientesMainController implements SubViewControllerBase { // 
 
     @Override
     public void inicializarSubView() {
-        // Configurar las columnas de la tabla
         colCedulaPaciente.setCellValueFactory(new PropertyValueFactory<>("cedula"));
         colNombrePaciente.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colEdadPaciente.setCellValueFactory(new PropertyValueFactory<>("edad"));
         colSexoPaciente.setCellValueFactory(new PropertyValueFactory<>("sexo"));
         colUsuarioPaciente.setCellValueFactory(new PropertyValueFactory<>("nombreUsuario"));
-        // ... configura las demás columnas
-
+        if (colNumSeguroPaciente != null) {
+            colNumSeguroPaciente.setCellValueFactory(new PropertyValueFactory<>("numeroSeguroSocial"));
+        }
         cargarPacientesEnTabla();
     }
 
     @FXML
-    public void initialize() { // Este método es llamado por FXMLLoader después de inyectar los @FXML
-        // Es mejor llamar a inicializarSubView() desde el AdministradorViewController
-        // después de que todas las dependencias (mainApp, sistemaHospitalario) estén seteadas.
-        // Pero si no usas SubViewControllerBase, puedes poner la lógica de inicialización aquí
-        // siempre y cuando las dependencias se inyecten antes.
+    public void initialize() {
+        // La inicialización principal ocurre en inicializarSubView
     }
-
 
     private void cargarPacientesEnTabla() {
         if (sistemaHospitalario != null) {
@@ -89,16 +92,16 @@ public class AdminPacientesMainController implements SubViewControllerBase { // 
             tablaPacientes.refresh();
         } else {
             System.err.println("SistemaHospitalario es nulo en AdminPacientesMainController.");
+            if (administradorViewController != null) {
+                administradorViewController.mostrarAlerta("Error", "Error Interno", "No se pudo acceder a los datos del sistema (pacientes).", Alert.AlertType.ERROR);
+            }
         }
     }
 
     @FXML
     void handleCrearPaciente(ActionEvent event) {
         System.out.println("Crear nuevo paciente...");
-        // Aquí llamarías a una nueva ventana/dialogo para el formulario de creación
-        // Usando el método que podrías definir en AdministradorViewController
-        // o creando uno nuevo aquí si la lógica es específica.
-        mostrarDialogoFormularioPaciente(null); // null para nuevo paciente
+        mostrarDialogoFormularioPaciente(null);
     }
 
     @FXML
@@ -108,8 +111,10 @@ public class AdminPacientesMainController implements SubViewControllerBase { // 
             System.out.println("Actualizar paciente: " + pacienteSeleccionado.getNombre());
             mostrarDialogoFormularioPaciente(pacienteSeleccionado);
         } else {
-            administradorViewController.mostrarAlerta("Sin Selección", "No hay paciente seleccionado",
-                    "Por favor, seleccione un paciente de la tabla para actualizar.", Alert.AlertType.WARNING);
+            if (administradorViewController != null) {
+                administradorViewController.mostrarAlerta("Sin Selección", "No hay paciente seleccionado",
+                        "Por favor, seleccione un paciente de la tabla para actualizar.", Alert.AlertType.WARNING);
+            }
         }
     }
 
@@ -117,71 +122,100 @@ public class AdminPacientesMainController implements SubViewControllerBase { // 
     void handleEliminarPaciente(ActionEvent event) {
         Paciente pacienteSeleccionado = tablaPacientes.getSelectionModel().getSelectedItem();
         if (pacienteSeleccionado != null) {
-            // Confirmación antes de eliminar
             Alert alertConfirmacion = new Alert(Alert.AlertType.CONFIRMATION);
             alertConfirmacion.setTitle("Confirmar Eliminación");
             alertConfirmacion.setHeaderText("Eliminar Paciente: " + pacienteSeleccionado.getNombre());
             alertConfirmacion.setContentText("¿Está seguro de que desea eliminar a este paciente? Esta acción no se puede deshacer.");
 
-            Optional<javafx.scene.control.ButtonType> resultado = alertConfirmacion.showAndWait();
-            if (resultado.isPresent() && resultado.get() == javafx.scene.control.ButtonType.OK) {
+            if (mainApp != null && mainApp.getPrimaryStage() != null) {
+                alertConfirmacion.initOwner(mainApp.getPrimaryStage());
+            } else if (administradorViewController != null && administradorViewController.getMainApp() != null && administradorViewController.getMainApp().getPrimaryStage() != null){
+                alertConfirmacion.initOwner(administradorViewController.getMainApp().getPrimaryStage());
+            }
+
+            Optional<ButtonType> resultado = alertConfirmacion.showAndWait();
+            if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
                 boolean eliminado = sistemaHospitalario.eliminarPaciente(pacienteSeleccionado.getCedula());
                 if (eliminado) {
-                    administradorViewController.mostrarAlerta("Éxito", "Paciente Eliminado",
-                            "El paciente " + pacienteSeleccionado.getNombre() + " ha sido eliminado.", Alert.AlertType.INFORMATION);
-                    cargarPacientesEnTabla(); // Recargar la lista
+                    if (administradorViewController != null) {
+                        administradorViewController.mostrarAlerta("Éxito", "Paciente Eliminado",
+                                "El paciente " + pacienteSeleccionado.getNombre() + " ha sido eliminado.", Alert.AlertType.INFORMATION);
+                    }
+                    cargarPacientesEnTabla();
                 } else {
-                    administradorViewController.mostrarAlerta("Error", "Error al Eliminar",
-                            "No se pudo eliminar el paciente. Verifique la consola para más detalles.", Alert.AlertType.ERROR);
+                    if (administradorViewController != null) {
+                        administradorViewController.mostrarAlerta("Error", "Error al Eliminar",
+                                "No se pudo eliminar el paciente. Verifique la consola para más detalles.", Alert.AlertType.ERROR);
+                    }
                 }
             }
         } else {
-            administradorViewController.mostrarAlerta("Sin Selección", "No hay paciente seleccionado",
-                    "Por favor, seleccione un paciente de la tabla para eliminar.", Alert.AlertType.WARNING);
+            if (administradorViewController != null) {
+                administradorViewController.mostrarAlerta("Sin Selección", "No hay paciente seleccionado",
+                        "Por favor, seleccione un paciente de la tabla para eliminar.", Alert.AlertType.WARNING);
+            }
         }
     }
 
     // Método para mostrar el diálogo del formulario de paciente (Crear/Actualizar)
     private void mostrarDialogoFormularioPaciente(Paciente paciente) {
         try {
-            FXMLLoader loader = new FXMLLoader();
-            // Asegúrate de que la ruta sea correcta y que este FXML exista
-            loader.setLocation(getClass().getResource("/views/admin/forms/PacienteFormView.fxml"));
-            Parent page = loader.load();
+            // RUTA CORREGIDA para PacienteFormView.fxml
+            String fxmlFormPath = VIEWS_BASE_PATH + "PacienteFormView.fxml";
+            URL resourceUrl = getClass().getResource(fxmlFormPath);
+
+            if (resourceUrl == null) {
+                System.err.println("Error Crítico en AdminPacientesMainController: No se encuentra el FXML del formulario en: " + fxmlFormPath);
+                if (administradorViewController != null) {
+                    administradorViewController.mostrarAlerta("Error Fatal de Carga", "Archivo FXML del formulario de paciente no encontrado.", "No se pudo localizar: " + fxmlFormPath, Alert.AlertType.ERROR);
+                }
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(resourceUrl);
+            Parent page = loader.load(); // Esta es la línea ~150 que causaba el error
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle(paciente == null ? "Registrar Nuevo Paciente" : "Actualizar Paciente");
             dialogStage.initModality(Modality.WINDOW_MODAL);
-            // Establecer el owner puede ser desde mainApp.getPrimaryStage() o desde el stage actual si lo tienes
-            if (mainApp != null) dialogStage.initOwner(mainApp.getPrimaryStage());
 
+            if (mainApp != null && mainApp.getPrimaryStage() != null) {
+                dialogStage.initOwner(mainApp.getPrimaryStage());
+            } else if (administradorViewController != null && administradorViewController.getMainApp() != null && administradorViewController.getMainApp().getPrimaryStage() != null) {
+                dialogStage.initOwner(administradorViewController.getMainApp().getPrimaryStage());
+            }
 
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
 
-            // Obtener el controlador del formulario
             PacienteFormController controller = loader.getController();
+            if (controller == null) {
+                System.err.println("Error Crítico: El controlador para " + fxmlFormPath + " es nulo. Verifica el fx:controller en el FXML PacienteFormView.fxml.");
+                if (administradorViewController != null) {
+                    administradorViewController.mostrarAlerta("Error de Carga", "No se pudo obtener el controlador del formulario de paciente.","", Alert.AlertType.ERROR);
+                }
+                return;
+            }
             controller.setDialogStage(dialogStage);
-            controller.setSistemaHospitalario(this.sistemaHospitalario); // Pasar la instancia
-            controller.setPacienteParaEdicion(paciente); // Si es null, es para crear uno nuevo
-            controller.setAdminPacientesMainController(this); // Para refrescar la tabla después
+            controller.setSistemaHospitalario(this.sistemaHospitalario);
+            controller.setPacienteParaEdicion(paciente);
+            controller.setAdminPacientesMainController(this);
 
             dialogStage.showAndWait();
 
-            // No necesitas verificar isOkClicked si el formulario mismo guarda y cierra.
-            // La actualización de la tabla se hará desde el PacienteFormController si la operación es exitosa.
-
         } catch (IOException e) {
             e.printStackTrace();
-            administradorViewController.mostrarAlerta("Error de Carga", "No se pudo cargar el formulario del paciente.", e.getMessage(), Alert.AlertType.ERROR);
-        } catch (NullPointerException e) {
+            if (administradorViewController != null) {
+                administradorViewController.mostrarAlerta("Error de Carga (IOException)", "No se pudo cargar el formulario del paciente.", e.getMessage(), Alert.AlertType.ERROR);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
-            administradorViewController.mostrarAlerta("Error de Carga", "Recurso FXML del formulario no encontrado.", "Verifique la ruta del archivo FXML del formulario.", Alert.AlertType.ERROR);
-
+            if (administradorViewController != null) {
+                administradorViewController.mostrarAlerta("Error Inesperado", "Ocurrió un error al abrir el formulario de paciente.", e.getMessage(), Alert.AlertType.ERROR);
+            }
         }
     }
 
-    // Este método puede ser llamado por PacienteFormController después de una operación exitosa
     public void refrescarTablaPacientes() {
         cargarPacientesEnTabla();
     }
