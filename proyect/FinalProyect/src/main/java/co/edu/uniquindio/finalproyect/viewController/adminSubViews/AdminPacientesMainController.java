@@ -4,9 +4,7 @@ import co.edu.uniquindio.finalproyect.application.App;
 import co.edu.uniquindio.finalproyect.model.Paciente;
 import co.edu.uniquindio.finalproyect.model.Sexo;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
-import co.edu.uniquindio.finalproyect.model.TipoUsuario; // Necesario para crear Paciente
 import co.edu.uniquindio.finalproyect.viewController.AdministradorViewController;
-import co.edu.uniquindio.finalproyect.viewController.SubViewControllerBase; // Si la usas
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,7 +16,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms.PacienteFormController;

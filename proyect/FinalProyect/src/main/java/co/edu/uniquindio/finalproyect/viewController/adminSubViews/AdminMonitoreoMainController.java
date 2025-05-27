@@ -5,7 +5,6 @@ import co.edu.uniquindio.finalproyect.model.CitaMedica;
 import co.edu.uniquindio.finalproyect.model.Medico;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
 import co.edu.uniquindio.finalproyect.viewController.AdministradorViewController;
-import co.edu.uniquindio.finalproyect.viewController.SubViewControllerBase;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,7 +17,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage; // Necesario para initOwner en Alerta
 
 import java.time.LocalDate;
 import java.time.LocalTime;

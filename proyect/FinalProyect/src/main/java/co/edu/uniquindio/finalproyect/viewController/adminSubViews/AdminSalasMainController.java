@@ -5,7 +5,6 @@ import co.edu.uniquindio.finalproyect.model.Sala;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
 import co.edu.uniquindio.finalproyect.model.TipoSala; // Para la columna de la tabla
 import co.edu.uniquindio.finalproyect.viewController.AdministradorViewController;
-import co.edu.uniquindio.finalproyect.viewController.SubViewControllerBase; // Tu interfaz base
 import co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms.SalaFormController;
 
 import javafx.collections.FXCollections;

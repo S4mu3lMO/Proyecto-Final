@@ -4,7 +4,6 @@ import co.edu.uniquindio.finalproyect.application.App;
 import co.edu.uniquindio.finalproyect.model.EstadoCita;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
 import co.edu.uniquindio.finalproyect.viewController.AdministradorViewController;
-import co.edu.uniquindio.finalproyect.viewController.SubViewControllerBase;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList; // IMPORTACIÓN AÑADIDA Y NECESARIA

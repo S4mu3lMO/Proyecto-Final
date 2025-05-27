@@ -4,7 +4,6 @@ import co.edu.uniquindio.finalproyect.application.App;
 import co.edu.uniquindio.finalproyect.model.Medico;
 import co.edu.uniquindio.finalproyect.model.SistemaHospitalario;
 import co.edu.uniquindio.finalproyect.viewController.AdministradorViewController;
-import co.edu.uniquindio.finalproyect.viewController.SubViewControllerBase; // Tu interfaz base
 import co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms.MedicoFormController;
 import co.edu.uniquindio.finalproyect.viewController.adminSubViews.forms.MedicoHorariosFormController;
 
