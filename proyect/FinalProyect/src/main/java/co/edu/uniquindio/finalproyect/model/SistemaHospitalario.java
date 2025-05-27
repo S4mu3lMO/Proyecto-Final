@@ -117,7 +117,7 @@ public class SistemaHospitalario {
             paciente.setHistorialMedico(nuevoHistorial);
         }
         listPacientes.add(paciente);
-        listUsuarios.add(paciente); // Añadir también a la lista general de usuarios
+        listUsuarios.add(paciente);
         System.out.println("Paciente " + paciente.getNombre() + " registrado exitosamente.");
         return true;
     }
@@ -481,7 +481,7 @@ public class SistemaHospitalario {
 
     public boolean registrarTratamiento(String cedulaMedico, String cedulaPaciente,
                                         LocalDate fechaInicio, LocalDate fechaFin,
-                                        String descripcionTratamiento, LinkedList<Medicamento> listMedicamentosTratamiento, // Renombrado para claridad
+                                        String descripcionTratamiento, LinkedList<Medicamento> listMedicamentosTratamiento,
                                         String dosisFrecuencia) {
 
         Medico medicoPrescriptor = buscarMedicoPorCedula(cedulaMedico);
@@ -641,7 +641,6 @@ public class SistemaHospitalario {
     public boolean eliminarSala(String idSala) {
         Sala salaAEliminar = buscarSalaPorId(idSala);
         if (salaAEliminar != null) {
-            // Verificar si hay citas futuras pendientes o confirmadas en esta sala
             for (CitaMedica cita : listCitasMedicas) {
                 if (cita.getSala().getIdSala().equals(idSala) &&
                         (cita.getEstadoCita() == EstadoCita.PENDIENTE || cita.getEstadoCita() == EstadoCita.CONFIRMADA) &&
@@ -662,15 +661,15 @@ public class SistemaHospitalario {
 
     public Sala buscarSalaDisponible(LocalDate fecha, LocalTime hora, TipoSala tipoSala) {
         for (Sala s : listSalas) {
-            if (s.getTipoSala() == tipoSala && s.isEstaDisponible()) { // Usar getTipo()
+            if (s.getTipoSala() == tipoSala && s.isEstaDisponible()) {
                 boolean salaOcupadaPorOtraCita = false;
                 for (CitaMedica citaExistente : listCitasMedicas) {
                     if (citaExistente.getSala() != null &&
                             citaExistente.getSala().equals(s) &&
                             citaExistente.getFecha().equals(fecha) &&
                             citaExistente.getHora().equals(hora) &&
-                            (citaExistente.getEstadoCita() == EstadoCita.PENDIENTE || // Usar getEstado()
-                                    citaExistente.getEstadoCita() == EstadoCita.CONFIRMADA)) { // Usar getEstado()
+                            (citaExistente.getEstadoCita() == EstadoCita.PENDIENTE ||
+                                    citaExistente.getEstadoCita() == EstadoCita.CONFIRMADA)) {
                         salaOcupadaPorOtraCita = true;
                         break;
                     }
@@ -726,8 +725,7 @@ public class SistemaHospitalario {
     }
 
 
-    public CitaMedica asignarPacienteAMedicoDisponible(String cedulaPaciente, String especialidadRequerida,
-                                                       LocalDate fechaCita, LocalTime horaCita, String motivoCita) {
+    public CitaMedica asignarPacienteAMedicoDisponible(String cedulaPaciente, String especialidadRequerida, LocalDate fechaCita, LocalTime horaCita, String motivoCita) {
 
         Paciente paciente = buscarPacientePorCedula(cedulaPaciente);
         if (paciente == null) {
@@ -803,8 +801,7 @@ public class SistemaHospitalario {
     // NUEVOS MÉTODOS PARA GENERACIÓN DE REPORTES
 
 
-    public String generarReporteCitasMedicas(LocalDate fechaInicio, LocalDate fechaFin,
-                                             String cedulaMedico, EstadoCita estadoCita) {
+    public String generarReporteCitasMedicas(LocalDate fechaInicio, LocalDate fechaFin, String cedulaMedico, EstadoCita estadoCita) {
         StringBuilder reporte = new StringBuilder();
         reporte.append("--- REPORTE DE CITAS MÉDICAS ---\n");
         reporte.append("Rango de Fechas: ").append(fechaInicio).append(" al ").append(fechaFin).append("\n");
@@ -901,12 +898,11 @@ public class SistemaHospitalario {
 
         for (Sala sala : consultorios) {
             long minutosOcupados = 0;
-            // Contar citas para esta sala en la fecha especificada y estado PENDIENTE/CONFIRMADA
             for (CitaMedica cita : listCitasMedicas) {
                 if (cita.getSala().equals(sala) && cita.getFecha().equals(fechaReporte) &&
                         (cita.getEstadoCita() == EstadoCita.PENDIENTE || cita.getEstadoCita() == EstadoCita.CONFIRMADA)) {
                     minutosOcupados += duracionCitaMinutos;
-                    citasPorSala.merge(sala, 1, Integer::sum); // Contar la cantidad de citas
+                    citasPorSala.merge(sala, 1, Integer::sum);
                 }
             }
 
