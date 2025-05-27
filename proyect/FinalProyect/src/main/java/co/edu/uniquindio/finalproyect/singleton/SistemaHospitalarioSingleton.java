@@ -39,7 +39,7 @@ public class SistemaHospitalarioSingleton {
         }
 
         System.out.println("Inicializando SistemaHospitalarioSingleton con datos de prueba ampliados...");
-        sistemaHospitalario = new SistemaHospitalario("UQ", "900.555.123-0");
+        sistemaHospitalario = new SistemaHospitalario("UniSalud UQ", "900.555.123-0");
 
 
         Medicamento ibuprofeno = new Medicamento(UUID.randomUUID().toString().substring(0,8), "Ibuprofeno", "Tableta 600mg", 600, "Genfar", false);
