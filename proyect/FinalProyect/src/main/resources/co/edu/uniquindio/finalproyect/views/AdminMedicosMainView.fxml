@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.finalproyect.viewController.adminSubViews.AdminMedicosMainController">
+    <top>
+        <Label text="Gestión de Médicos" BorderPane.alignment="CENTER_LEFT">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </BorderPane.margin>
+        </Label>
+    </top>
+    <center>
+        <TableView fx:id="tablaMedicos" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <columns>
+                <TableColumn fx:id="colCedulaMedico" prefWidth="100.0" text="Cédula" />
+                <TableColumn fx:id="colNombreMedico" prefWidth="150.0" text="Nombre Completo" />
+                <TableColumn fx:id="colEspecialidadMedico" prefWidth="120.0" text="Especialidad" />
+                <TableColumn fx:id="colUsuarioMedico" prefWidth="120.0" text="Usuario" />
+                <TableColumn fx:id="colLicenciaMedico" prefWidth="120.0" text="No. Licencia" />
+            </columns>
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" />
+            </BorderPane.margin>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+        </TableView>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="btnCrearMedico" mnemonicParsing="false" onAction="#handleCrearMedico" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Crear Médico">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Button>
+                <Button fx:id="btnActualizarMedico" mnemonicParsing="false" onAction="#handleActualizarMedico" style="-fx-background-color: #FFC107;" text="Actualizar Seleccionado">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Button>
+                <Button fx:id="btnEliminarMedico" mnemonicParsing="false" onAction="#handleEliminarMedico" style="-fx-background-color: #F44336; -fx-text-fill: white;" text="Eliminar Seleccionado">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Button>
+                <Button fx:id="btnGestionarHorarios" mnemonicParsing="false" onAction="#handleGestionarHorarios" style="-fx-background-color: #007bff; -fx-text-fill: white;" text="Gestionar Horarios">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Button>
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </BorderPane.margin>
+        </HBox>
+    </bottom>
+    <padding>
+        <Insets left="5.0" right="5.0" />
+    </padding>
+</BorderPane>

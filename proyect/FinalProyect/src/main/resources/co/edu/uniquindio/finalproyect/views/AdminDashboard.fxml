@@ -1,29 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.finalproyect.viewController.AdministradorViewController">
+<BorderPane fx:id="mainAdminPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.finalproyect.viewController.AdministradorViewController">
     <top>
         <Label text="Panel de Administrador" BorderPane.alignment="CENTER">
-            <font><Font name="System Bold" size="24.0" /></font>
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+            <BorderPane.margin>
+                <Insets bottom="10.0" top="10.0" />
+            </BorderPane.margin>
         </Label>
     </top>
     <left>
-        <VBox spacing="10" style="-fx-padding: 10;">
-            <Label text="Gestión de Usuarios:"/>
-            <Button fx:id="btnRegistrarMedico" text="Registrar Médico" onAction="#handleRegistrarMedico"/>
-            <Button fx:id="btnGestionarPacientes" text="Gestionar Pacientes" onAction="#handleGestionarPacientes"/>
-            <Label text="Gestión del Sistema:"/>
-            <Button fx:id="btnGestionarSalas" text="Gestionar Salas" onAction="#handleGestionarSalas"/>
-            <Button fx:id="btnGenerarReportes" text="Generar Reportes" onAction="#handleGenerarReportes"/>
-            <Button fx:id="btnCerrarSesionAdmin" text="Cerrar Sesión" onAction="#handleCerrarSesion"/>
+        <VBox prefHeight="537.0" prefWidth="200.0" spacing="10.0" style="-fx-background-color: #f0f0f0; -fx-padding: 15; -fx-border-color: lightgray; -fx-border-width: 0 1 0 0;">
+            <children>
+                <Label fx:id="lblAdminNombre" text="Admin: [Nombre]">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </Label>
+                <Button fx:id="btnModuloGestionPacientes" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleModuloGestionPacientes" text="Gestionar Pacientes">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+                <Button fx:id="btnModuloGestionMedicos" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleModuloGestionMedicos" text="Gestionar Médicos">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+                <Button fx:id="btnModuloGestionSalasHorarios" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleModuloGestionSalasHorarios" text="Gestionar Salas">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+                <Button fx:id="btnModuloMonitoreoAsignacion" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleModuloMonitoreoAsignacion" text="Monitoreo y Asignación">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+                <Button fx:id="btnModuloReportes" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleModuloReportes" text="Generar Reportes">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+                <VBox alignment="BOTTOM_LEFT" VBox.vgrow="ALWAYS">
+                    <children>
+                        <Button fx:id="btnCerrarSesion" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleCerrarSesion" text="Cerrar Sesión">
+                            <font>
+                                <Font size="13.0" />
+                            </font>
+                        </Button>
+                    </children>
+                </VBox>
+            </children>
         </VBox>
     </left>
     <center>
-        <Label text="Contenido principal del administrador..."/>
+        <Label text="Seleccione una opción del menú." BorderPane.alignment="CENTER">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
     </center>
 </BorderPane>

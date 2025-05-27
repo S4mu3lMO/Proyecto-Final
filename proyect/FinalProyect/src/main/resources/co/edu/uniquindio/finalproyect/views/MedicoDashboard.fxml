@@ -1,14 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="co.edu.uniquindio.finalproyect.views.MedicoDashboard"
-            prefHeight="400.0" prefWidth="600.0">
+<BorderPane fx:id="mainMedicoPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.finalproyect.viewController.MedicoViewController">
+    <top>
+        <Label text="Panel de Consultas y Gestión Médica" BorderPane.alignment="CENTER">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+            <BorderPane.margin>
+                <Insets bottom="10.0" top="10.0" />
+            </BorderPane.margin>
+        </Label>
+    </top>
+    <left>
+        <VBox prefWidth="220.0" spacing="10.0" style="-fx-background-color: #e6f7ff; -fx-padding: 15; -fx-border-color: lightblue; -fx-border-width: 0 1 0 0;">
+            <children>
+                <Label fx:id="lblNombreMedicoMenu" text="Dr(a). [Nombre Médico]"> <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+                    <VBox.margin>
+                        <Insets bottom="10.0" /> </VBox.margin>
+                </Label>
 
-</AnchorPane>
+                <Button fx:id="btnVerHistorialesMedicos" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleVerHistoriales" text="Acceso a Historiales Médicos">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+                <Button fx:id="btnRegistrarDiagnostico" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleRegistrarDiagnostico" text="Registrar Diagnóstico">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+                <Button fx:id="btnRegistrarTratamiento" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleRegistrarTratamiento" text="Registrar Tratamiento">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+                <Button fx:id="btnGestionarMisHorarios" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleGestionarMisHorarios" text="Administrar Horarios de Consulta">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+                <Button fx:id="btnVerNotificacionesCitas" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleVerNotificaciones" text="Bandeja de Notificaciones">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+                <VBox alignment="BOTTOM_LEFT" VBox.vgrow="ALWAYS">
+                    <children>
+                        <Button fx:id="btnCerrarSesionMedico" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleCerrarSesionMedico" text="Cerrar Sesión">
+                            <font>
+                                <Font size="13.0" />
+                            </font>
+                        </Button>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+    <center>
+        <Label text="Bienvenido, Doctor(a). Seleccione una opción del menú." BorderPane.alignment="CENTER">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+    </center>
+</BorderPane>
